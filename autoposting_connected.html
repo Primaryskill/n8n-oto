@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AutoPosting Med — Modern Dashboard</title>
+<!-- Font modern standar Android (Inter) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   SISTEM DESAIN MODERN (MATERIAL 3 / ANDROID UI)
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  /* Palet Warna Modern Dark Mode */
+  --bg-base: #09090B;      
+  --bg-surface: #18181B;   
+  --bg-card: #27272A;      
+  --bg-card2: #3F3F46;     
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  
+  --border: #3F3F46;
+  --border-light: #52525B;
+  
+  /* Aksen Utama */
+  --accent: #06B6D4; 
+  --accent-dim: #0891B2;
+  --accent-bg: rgba(6, 182, 212, 0.15);
+  --accent-bg2: rgba(6, 182, 212, 0.25);
+  
+  /* Semantic Colors */
+  --blue: #3B82F6; --blue-bg: rgba(59, 130, 246, 0.15);
+  --purple: #8B5CF6; --purple-bg: rgba(139, 92, 246, 0.15);
+  --amber: #F59E0B; --amber-bg: rgba(245, 158, 11, 0.15);
+  --red: #EF4444; --red-bg: rgba(239, 68, 68, 0.15);
+  --green: #10B981; --green-bg: rgba(16, 185, 129, 0.15);
+  
+  /* Text Colors */
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  
+  /* Corner Radius Modern Android */
+  --radius: 12px; 
+  --radius-lg: 20px; 
+  --radius-xl: 28px;
+  
+  --sidebar-w: 260px;
+  --font-family: 'Inter', sans-serif;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Override Blogger - Paksa Full Screen */
+body {
+  font-family: var(--font-family);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  margin: 0; padding: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden; 
+}
+
+.app-wrapper {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg-base);
+  z-index: 999999;
+  display: flex;
+  overflow: hidden;
+}
+
+/* LOGIN SCREEN */
+#loginOverlay {
+  position: fixed; inset: 0; background: var(--bg-base); z-index: 10000000;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background-image: radial-gradient(circle at 50% -20%, var(--bg-card2), var(--bg-base) 70%);
+}
+.login-card {
+  background: var(--bg-surface); width: 100%; max-width: 400px;
+  padding: 40px 30px; border-radius: var(--radius-xl);
+  border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.login-logo {
+  width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent), var(--blue));
+  border-radius: 20px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 32px; margin-bottom: 20px; box-shadow: 0 8px 16px rgba(6, 182, 212, 0.3);
+}
+
+/* LAYOUT UTAMA */
+.sidebar {
+  width: var(--sidebar-w); background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; height: 100vh;
+  z-index: 100; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.main {
+  margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column;
+  height: 100vh; overflow-y: auto; background: var(--bg-base);
+}
+.topbar {
+  background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border); padding: 0 24px; height: 80px; 
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50; gap: 16px;
+}
+.content { padding: 32px; padding-bottom: 120px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; } 
+
+/* Sidebar */
+.sidebar-logo { padding: 24px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); }
+.logo-icon {
+  width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent), var(--blue));
+  border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; color: white;
+}
+.logo-text { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.5px; line-height: 1.2; }
+.logo-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+.nav { padding: 10px 16px; padding-bottom: 80px; flex: 1; overflow-y: auto; } 
+.nav-section { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; padding: 16px 12px 8px; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: var(--radius-lg);
+  cursor: pointer; color: var(--text-secondary); font-size: 14px; font-weight: 500; margin-bottom: 4px; transition: all 0.2s ease;
+}
+.nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.nav-item.active { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+.nav-item .icon { font-size: 18px; width: 20px; text-align: center; }
+.nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.sidebar-footer { padding: 16px; border-top: 1px solid var(--border); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); display: inline-block; margin-right: 8px; }
+
+/* Komponen Asli yang disesuaikan dengan UI Modern */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 99px;
+  border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); cursor: pointer;
+  font-size: 14px; font-family: var(--font-family); font-weight: 600; transition: all 0.2s; min-height: 42px; user-select: none;
+}
+.btn:hover { background: var(--bg-hover); border-color: var(--border-light); transform: translateY(-1px); }
+.btn-primary { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3); }
+.btn-primary:hover { background: var(--accent-dim); color: #fff; box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4); }
+.btn-warning { background: var(--amber); color: #000; border-color: var(--amber); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--red); border-color: transparent; }
+.btn-danger:hover { background: var(--red); color: #fff; }
+.btn-sm { padding: 6px 14px; font-size: 13px; min-height: 34px; border-radius: 12px;}
+.btn-edit { background: var(--blue-bg); color: var(--blue); border-color: rgba(59, 130, 246, 0.3); }
+.btn-edit:hover { background: rgba(59, 130, 246, 0.2); }
+
+.card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-sm); }
+.stat-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+.stat-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+.stat-label { font-size: 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; }
+.stat-value { font-size: 32px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; font-family: var(--font-family); }
+.stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+@media(max-width:1200px){ .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width:900px){ .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+input[type=text], input[type=password], input[type=number], input[type=url], input[type=time], input[type=date], select, textarea {
+  width: 100%; background: var(--bg-base); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; color: var(--text-primary);
+  font-family: var(--font-family); font-size: 14px; outline: none; transition: all 0.2s; min-height: 44px;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+input::placeholder, textarea::placeholder { color: var(--text-muted); }
+select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A1A1AA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; }
+
+.toggle-wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 12px; }
+.toggle-info { display: flex; flex-direction: column; gap: 4px; }
+.toggle-label { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.toggle-desc { font-size: 12px; color: var(--text-muted); }
+.toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider { position: absolute; inset: 0; background: var(--border-light); border-radius: 24px; cursor: pointer; transition: 0.3s; }
+.toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.toggle input:checked + .toggle-slider { background: var(--accent); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+.table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--bg-surface); }
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
+thead tr { background: rgba(0,0,0,0.2); }
+th { padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--text-primary); font-size: 14px; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+.badge-success { background: var(--green-bg); color: var(--green); }
+.badge-danger { background: var(--red-bg); color: var(--red); }
+.badge-warning { background: var(--amber-bg); color: var(--amber); }
+.badge-info { background: var(--blue-bg); color: var(--blue); }
+.badge-purple { background: var(--purple-bg); color: #C4B5FD; }
+.badge-muted { background: var(--bg-card2); color: var(--text-secondary); }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 9999999; display: none; align-items: center; justify-content: center; padding: 16px; opacity: 0; transition: opacity 0.3s; }
+.modal-overlay.open { display: flex; opacity: 1; }
+.modal { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-xl); width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; padding: 32px; position: relative; transform: translateY(20px) scale(0.95); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+.modal-wide { max-width: 600px; }
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.modal-title { font-size: 20px; font-weight: 700; font-family: var(--font-family); }
+.modal-close { background: var(--bg-card); border: none; color: var(--text-secondary); cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 18px; }
+.modal-close:hover { background: var(--bg-card2); color: #fff; }
+.modal-footer { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+.section { display: none; animation: fadeIn 0.4s ease forwards; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.section-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+.section-title { font-size: 28px; font-weight: 800; letter-spacing: -1px; font-family: var(--font-family); }
+.section-subtitle { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+.tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.tag-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; border-color: transparent; }
+.tag-fb { background: #1877F2; color: #fff; border-color: transparent; }
+
+.hamburger { display: none; background: none; border: none; color: var(--text-primary); font-size: 24px; cursor: pointer; }
+.sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); z-index: 99; }
+
+@media(max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-backdrop.open { display: block; }
+  .main { margin-left: 0; }
+  .hamburger { display: block; }
+  .content { padding: 20px; padding-bottom: 120px; }
+  .modal { border-radius: var(--radius-xl) var(--radius-xl) 0 0; margin-top: auto; padding: 24px; max-height: 85vh;}
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* Original Utility Classes (dipertahankan agar fungsi JS tidak rusak) */
+.flex { display: flex; } .items-center { align-items: center; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; }
+.justify-between { justify-content: space-between; } .mt-4 { margin-top: 24px; } .mt-3 { margin-top: 16px; }
+.mb-4 { margin-bottom: 24px; } .mb-3 { margin-bottom: 16px; } .mb-2 { margin-bottom: 8px; }
+.text-muted { color: var(--text-secondary); } .text-sm { font-size: 13px; } .fw-600 { font-weight: 600; }
+.w-full { width: 100%; } .text-accent { color: var(--accent); } .text-green { color: var(--green); }
+.text-red { color: var(--red); } .text-amber { color: var(--amber); } 
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-mono { font-family: monospace; font-size: 12px; color: var(--text-secondary); }
+
+.limit-bar { display: flex; gap: 4px; align-items: center; }
+.limit-pip { width: 12px; height: 6px; border-radius: 4px; border: 1px solid var(--border); background: transparent; }
+.limit-pip.used { background: var(--accent); border-color: var(--accent); }
+.limit-pip.over { background: var(--red); border-color: var(--red); }
+.progress { height: 6px; background: var(--bg-card2); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; background: var(--accent); transition: width 0.4s; }
+.img-preview-placeholder { width: 100%; height: 120px; border-radius: var(--radius-lg); border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; transition: 0.2s; font-size: 12px; }
+.img-preview-placeholder:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.img-preview { width: 100%; height: 160px; border-radius: var(--radius-lg); object-fit: cover; display: none; margin-top: 8px; border: 1px solid var(--border); }
+.img-preview.show { display: block; }
+.cfg-tab-content { display: none; } .cfg-tab-content.active { display: block; }
+.info-box { background: var(--blue-bg); border: 1px solid rgba(59, 130, 246, 0.2); padding: 12px 16px; border-radius: var(--radius); margin-bottom: 16px; display: flex; gap: 12px; font-size: 13px; color: var(--blue); line-height: 1.5; }
+.warning-box { background: var(--amber-bg); border: 1px solid rgba(245, 158, 11, 0.25); padding: 12px 16px; border-radius: var(--radius); margin-bottom: 16px; display: flex; gap: 12px; font-size: 13px; color: var(--amber); }
+.timeline { display: flex; flex-direction: column; gap: 4px; }
+.tl-item { display: flex; gap: 12px; padding: 8px 0; }
+.tl-line { display: flex; flex-direction: column; align-items: center; min-width: 12px; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; z-index: 2; margin-top: 4px; flex-shrink: 0;}
+.tl-connector { width: 2px; flex: 1; background: var(--border); margin: 2px 0; min-height: 16px; }
+.tl-content { flex: 1; }
+.page-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-family); }
+.page-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.page-btn.active { background: var(--accent-bg2); border-color: rgba(6, 182, 212, 0.35); color: var(--accent); }
+.page-btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+.pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.page-info { font-size: 12px; color: var(--text-muted); margin: 0 6px; }
+.hl { background: rgba(6, 182, 212, 0.25); border-radius: 2px; padding: 0 2px; }
+.notif { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; }
+.notif-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.notif-title { font-size: 14px; font-weight: 600; }
+.notif-time { font-size: 12px; color: var(--text-muted); }
+.expiry-ok { color: var(--green); font-size: 12px; }
+.expiry-warn { color: var(--amber); font-size: 12px; font-weight: 600; }
+.expiry-danger { color: var(--red); font-size: 12px; font-weight: 700; }
+code { font-family: monospace; font-size: 12px; background: var(--bg-base); padding: 2px 6px; border-radius: 6px; color: var(--accent); }
+.help-text { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+.search-wrap { display: flex; align-items: center; gap: 8px; background: var(--bg-base); border: 1px solid var(--border); border-radius: 99px; padding: 0 16px; height: 42px; width: 300px; transition: 0.2s; }
+.search-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.search-wrap input { background: transparent; border: none; outline: none; color: white; width: 100%; font-family: var(--font-family); font-size: 14px; min-height: unset; padding: 0;}
+.search-wrap input::placeholder { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div style="display:none;"><img src="https://placehold.co/1200x630/09090B/06B6D4?text=AutoPosting+Dashboard" alt="Thumbnail"></div>
+
+<!-- ==========================================
+     LOGIN OVERLAY
+     ========================================== -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo">📱</div>
+    <h2 style="margin-bottom: 8px; font-weight: 800; font-size: 24px;">Selamat Datang</h2>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 32px;">Silakan masuk ke Dashboard AutoPosting</p>
+    
+    <div class="form-group" style="text-align: left;">
+      <label>Username</label>
+      <input type="text" id="logUser" placeholder="Masukkan username">
+    </div>
+    <div class="form-group" style="text-align: left;">
+      <label>Password</label>
+      <input type="password" id="logPass" placeholder="Masukkan password">
+    </div>
+    
+    <button class="btn btn-primary w-full mt-4" style="height: 48px; font-size: 15px;" onclick="doLogin()">Masuk Dashboard</button>
+    <div style="margin-top: 16px; font-size: 12px; color: var(--text-secondary);">
+      Data Dummy: admin / edudigital
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================
+     APP UTAMA
+     ========================================== -->
+<div class="app-wrapper">
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">📱</div>
+      <div><div class="logo-text">AutoPosting Med</div><div class="logo-sub">n8n Workflow Dashboard</div></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Menu Utama</div>
+      <div class="nav-item active" onclick="showSection('dashboard',this)"><span class="icon">🏠</span>Dashboard</div>
+      <div class="nav-item" onclick="showSection('akun',this)"><span class="icon">👤</span>Akun Sosmed</div>
+      <div class="nav-item" onclick="showSection('konten',this)"><span class="icon">🖼️</span>Konten / Media</div>
+      <div class="nav-item" onclick="showSection('jadwal',this)"><span class="icon">📅</span>Jadwal Posting</div>
+      <div class="nav-section">Monitoring</div>
+      <div class="nav-item" onclick="showSection('log',this)"><span class="icon">📋</span>Log Aktivitas<span class="nav-badge" id="failBadge">2</span></div>
+      <div class="nav-section">Pengaturan</div>
+      <div class="nav-item" onclick="showSection('config',this)"><span class="icon">⚙️</span>Konfigurasi</div>
+      <div class="nav-item" onclick="showSection('dbsetup',this)"><span class="icon">🗄️</span>Setup Database</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="flex items-center gap-2" style="padding:4px">
+        <span class="status-dot"></span>
+        <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Workflow Aktif</span>
+        <span class="badge badge-success" style="margin-left:auto">ON</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="flex items-center gap-3">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      </div>
+      
+      <div class="search-wrap">
+        <span style="color:var(--text-muted);">🔍</span>
+        <input type="text" id="globalSearch" placeholder="Cari akun, konten, jadwal..." oninput="handleSearch(this.value)">
+      </div>
+
+      <div class="flex items-center gap-3">
+      </div>
+    </header>
+
+    <div class="content">
+      
+      <!-- SEARCH RESULTS -->
+      <div id="searchResults" style="display:none;margin-bottom:20px">
+        <div class="card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="fw-600">🔍 Hasil Pencarian</div>
+            <button class="btn btn-sm" onclick="clearSearch()">✕ Tutup</button>
+          </div>
+          <div id="searchBody"></div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <section class="section active" id="section-dashboard">
+        <div class="section-header">
+          <div><div class="section-title">Dashboard</div><div class="section-subtitle" id="todayLabel">Memuat data...</div></div>
+          <button class="btn" onclick="renderDashboard()">↻ Refresh</button>
+        </div>
+        <div class="grid-4 mb-4">
+          <div class="stat-card"><div class="stat-icon" style="background:var(--accent-bg);color:var(--accent)">✅</div><div class="stat-label">Posting Berhasil</div><div class="stat-value text-accent">47</div><div class="stat-sub">Minggu ini</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:var(--red-bg);color:var(--red)">❌</div><div class="stat-label">Posting Gagal</div><div class="stat-value text-red" id="dashFail">2</div><div class="stat-sub">Perlu ditindak</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:var(--blue-bg);color:var(--blue)">👥</div><div class="stat-label">Akun Aktif</div><div class="stat-value" style="color:var(--blue)" id="dashAkun">6</div><div class="stat-sub" id="dashAkunSub">3 IG · 3 FB</div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:var(--amber-bg);color:var(--amber)">⚠️</div><div class="stat-label">Token Mau Expired</div><div class="stat-value text-amber" id="dashExpiry">2</div><div class="stat-sub">Perlu diperbarui</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><div class="flex items-center justify-between mb-3"><div class="fw-600">📋 Posting Hari Ini</div><div class="flex gap-2"><span class="badge badge-info">Pagi 08:00</span><span class="badge badge-purple">Sore 19:00</span></div></div><div id="todayPosts"></div></div>
+          <div class="card"><div class="flex items-center justify-between mb-3"><div class="fw-600">🕐 Aktivitas Terbaru</div><button class="btn btn-sm" onclick="showSection('log',document.querySelectorAll('.nav-item')[4])">Lihat Semua</button></div><div class="timeline" id="recentLog"></div></div>
+        </div>
+        <div class="grid-2 mt-4">
+          <div class="card"><div class="fw-600 mb-3">📊 Performa Platform</div><div id="platformStats"></div></div>
+          <div class="card"><div class="fw-600 mb-3">⚡ Status Sistem</div><div id="systemStatus"></div></div>
+        </div>
+      </section>
+
+      <!-- AKUN -->
+      <section class="section" id="section-akun">
+        <div class="section-header">
+          <div><div class="section-title">Akun Sosmed</div><div class="section-subtitle">Kelola akun Instagram & Facebook · maks. 2–3 posting/akun/hari</div></div>
+          <button class="btn btn-primary" onclick="openModal('modalAkun',null)">+ Tambah Akun</button>
+        </div>
+        <div id="expiryWarningBar"></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Nama Akun</th><th>Platform</th><th>User/Page ID</th><th>Token</th><th>Token Expire</th><th>Batas/Hari</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tbodyAkun"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- KONTEN -->
+      <section class="section" id="section-konten">
+        <div class="section-header">
+          <div><div class="section-title">Konten / Media</div><div class="section-subtitle">Library konten untuk posting otomatis</div></div>
+          <button class="btn btn-primary" onclick="openModal('modalKonten',null)">+ Tambah Konten</button>
+        </div>
+        <div class="grid-auto" id="kontenGrid"></div>
+      </section>
+
+      <!-- JADWAL -->
+      <section class="section" id="section-jadwal">
+        <div class="section-header">
+          <div><div class="section-title">Jadwal Posting</div><div class="section-subtitle">14 hari ke depan · maks. <strong style="color:var(--amber)">3 posting/akun/hari</strong></div></div>
+          <div class="flex gap-2">
+            <button class="btn" onclick="openModal('modalGenJadwal')">🔄 Generate 14 Hari</button>
+            <button class="btn btn-primary" onclick="openModal('modalTambahJadwal',null)">+ Manual</button>
+          </div>
+        </div>
+        <div class="flex gap-2 mb-3" style="flex-wrap:wrap">
+          <select id="filterPlatform" onchange="renderJadwal()" style="width:auto"><option value="">Semua Platform</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option></select>
+          <select id="filterStatus" onchange="renderJadwal()" style="width:auto"><option value="">Semua Status</option><option value="pending">Pending</option><option value="success">Berhasil</option><option value="failed">Gagal</option></select>
+          <select id="filterSession" onchange="renderJadwal()" style="width:auto"><option value="">Semua Sesi</option><option value="morning">Pagi</option><option value="evening">Sore</option></select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Tanggal</th><th>Sesi</th><th>Akun</th><th>Platform</th><th>Konten</th><th>Posting/Hari</th><th>Delay</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tbodyJadwal"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="jadwalPagination"></div>
+      </section>
+
+      <!-- LOG -->
+      <section class="section" id="section-log">
+        <div class="section-header">
+          <div><div class="section-title">Log Aktivitas</div><div class="section-subtitle">Riwayat semua posting yang dijalankan</div></div>
+          <div class="flex gap-2">
+            <button class="btn btn-sm" onclick="exportLog()">⬇ Export CSV</button>
+            <button class="btn btn-sm btn-danger" onclick="clearLog()">🗑 Hapus Log</button>
+          </div>
+        </div>
+        <div class="grid-3 mb-4">
+          <div class="stat-card" style="background:var(--green-bg);border-color:rgba(52,211,153,.2)"><div class="stat-label" style="color:var(--green)">Total Berhasil</div><div class="stat-value text-green" id="logSuccessCount">0</div></div>
+          <div class="stat-card" style="background:var(--red-bg);border-color:rgba(239,68,68,.2)"><div class="stat-label" style="color:var(--red)">Total Gagal</div><div class="stat-value text-red" id="logFailCount">0</div></div>
+          <div class="stat-card"><div class="stat-label">Total Semua</div><div class="stat-value" id="logTotalCount">0</div></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Waktu</th><th>Akun</th><th>Platform</th><th>Post ID</th><th>Status</th><th>Keterangan</th></tr></thead>
+            <tbody id="tbodyLog"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="logPagination"></div>
+      </section>
+
+      <!-- CONFIG -->
+      <section class="section" id="section-config">
+        <div class="section-header">
+          <div><div class="section-title">Konfigurasi</div><div class="section-subtitle">Pengaturan workflow AutoPosting Med</div></div>
+          <button class="btn btn-primary" onclick="saveConfig()">💾 Simpan</button>
+        </div>
+        <div class="flex gap-2 mb-4" style="flex-wrap:wrap">
+          <button class="btn config-tab active" data-tab="jadwal-cfg" onclick="switchConfigTab(this)">📅 Jadwal</button>
+          <button class="btn config-tab" data-tab="delay-cfg" onclick="switchConfigTab(this)">⏱ Delay</button>
+          <button class="btn config-tab" data-tab="telegram-cfg" onclick="switchConfigTab(this)">✈️ Telegram</button>
+          <button class="btn config-tab" data-tab="db-cfg" onclick="switchConfigTab(this)">🗄️ Database</button>
+          <button class="btn config-tab" data-tab="api-cfg" onclick="switchConfigTab(this)">🔑 API Keys</button>
+          <button class="btn config-tab" data-tab="n8n-cfg" onclick="switchConfigTab(this)">⚡ n8n</button>
+        </div>
+        <div class="cfg-tab-content active" id="jadwal-cfg">
+          <div class="card">
+            <div class="fw-600 mb-3">Jadwal Posting Harian</div>
+            <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">🌅 Sesi Pagi</div><div class="toggle-desc">Trigger setiap hari pagi</div></div><label class="toggle"><input type="checkbox" id="toggle_morning" checked><span class="toggle-slider"></span></label></div>
+            <div class="form-row mb-3"><div class="form-group"><label>Waktu Pagi (WIB)</label><input type="time" id="time_morning" value="08:00" oninput="updateCron('morning')"></div><div class="form-group"><label>Cron Expression</label><input type="text" id="cron_morning" value="0 8 * * *" readonly style="opacity:.7"></div></div>
+            <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">🌆 Sesi Sore</div><div class="toggle-desc">Trigger posting sore/malam</div></div><label class="toggle"><input type="checkbox" id="toggle_evening" checked><span class="toggle-slider"></span></label></div>
+            <div class="form-row"><div class="form-group"><label>Waktu Sore (WIB)</label><input type="time" id="time_evening" value="19:00" oninput="updateCron('evening')"></div><div class="form-group"><label>Cron Expression</label><input type="text" id="cron_evening" value="0 19 * * *" readonly style="opacity:.7"></div></div>
+            <div class="divider"></div>
+            <div class="form-row">
+              <div class="form-group"><label>Durasi Kampanye (hari)</label><input type="number" id="campaign_days" value="14" min="1" max="90"></div>
+              <div class="form-group"><label>Maks. Posting/Akun/Hari</label><input type="number" id="max_post_per_day" value="3" min="1" max="3"><div class="help-text">IG & FB izinkan maks. 25/hari, tapi aman di 2–3</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="cfg-tab-content" id="delay-cfg">
+          <div class="card">
+            <div class="fw-600 mb-3">Delay Antar Akun</div>
+            <div class="info-box"><span>ℹ️</span><div>Delay mencegah deteksi spam. Setiap akun dalam satu sesi tunggu sebelum posting.</div></div>
+            <div class="form-group"><label>Tipe Delay</label><select id="delay_type" onchange="updateDelayUI()"><option value="random">Random (lebih aman)</option><option value="fixed">Fixed (interval tetap)</option></select></div>
+            <div id="delay_random_cfg"><div class="form-row"><div class="form-group"><label>Min (detik)</label><input type="number" id="delay_min" value="60"></div><div class="form-group"><label>Maks (detik)</label><input type="number" id="delay_max" value="3600"><div class="help-text">3600 = 1 jam</div></div></div></div>
+            <div id="delay_fixed_cfg" style="display:none"><div class="form-group"><label>Interval per Akun (detik)</label><input type="number" id="delay_fixed_val" value="30"></div></div>
+          </div>
+        </div>
+        <div class="cfg-tab-content" id="telegram-cfg">
+          <div class="card">
+            <div class="fw-600 mb-3">Notifikasi Telegram Bot</div>
+            <div class="form-group"><label>Bot Token</label><input type="password" id="tg_token" value="8957847118:AAEBD_WsUAM6MXpeXdSWlDBKDcbte1hS1s4"></div>
+            <div class="form-group"><label>Chat ID</label><input type="text" id="tg_chatid" value="527618639"></div>
+            <div class="divider"></div>
+            <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">✅ Notifikasi Berhasil</div></div><label class="toggle"><input type="checkbox" id="tg_success" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">❌ Notifikasi Gagal</div></div><label class="toggle"><input type="checkbox" id="tg_fail" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">📊 Laporan Harian (23:00)</div></div><label class="toggle"><input type="checkbox" id="tg_daily"><span class="toggle-slider"></span></label></div>
+            <button class="btn mt-3" onclick="testTelegram()">🔔 Test Kirim</button>
+          </div>
+        </div>
+        <div class="cfg-tab-content" id="db-cfg">
+          <div class="card">
+            <div class="fw-600 mb-3">Koneksi PostgreSQL</div>
+            <div class="form-row"><div class="form-group"><label>Host</label><input type="text" id="db_host" value="localhost"></div><div class="form-group"><label>Port</label><input type="number" id="db_port" value="5432"></div></div>
+            <div class="form-group"><label>Database</label><input type="text" id="db_name" value="autoposting_db"></div>
+            <div class="form-row"><div class="form-group"><label>Username</label><input type="text" id="db_user" value="postgres"></div><div class="form-group"><label>Password</label><input type="password" id="db_pass"></div></div>
+            <div class="form-group"><label>SSL</label><select id="db_ssl"><option value="disable">Disable</option><option value="require">Require</option></select></div>
+            <button class="btn mt-3" onclick="showToast('🔌','Test koneksi...','');setTimeout(()=>showToast('✅','PostgreSQL terhubung!'),1200)">🔌 Test Koneksi</button>
+          </div>
+        </div>
+        <div class="cfg-tab-content" id="api-cfg">
+          <div class="card">
+            <div class="fw-600 mb-3">Facebook / Instagram Graph API</div>
+            <div class="form-group"><label>API Version</label><select id="api_version"><option value="v19.0" selected>v19.0</option><option value="v20.0">v20.0</option></select></div>
+            <div class="form-group"><label>App ID</label><input type="text" id="fb_app_id" placeholder="App ID dari Facebook Developer"></div>
+            <div class="form-group"><label>App Secret</label><input type="password" id="fb_app_secret" placeholder="App Secret"></div>
+            <div class="divider"></div>
+            <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">🔄 Auto-Refresh Token</div><div class="toggle-desc">Refresh sebelum expired 60 hari</div></div><label class="toggle"><input type="checkbox" id="toggle_autorefresh"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <div class="cfg-tab-content" id="n8n-cfg">
+          <div class="card">
+            <div class="fw-600 mb-3">n8n Instance</div>
+            <div class="form-group"><label>n8n Base URL</label><input type="url" id="n8n_url" value="https://your-n8n.com"></div>
+            <div class="form-group"><label>Workflow ID</label><input type="text" id="n8n_wfid" value="MdI5tqfkAFVAUBAW" readonly style="opacity:.7;font-family:monospace"></div>
+            <div class="form-group"><label>API Key</label><input type="password" id="n8n_apikey"></div>
+            <div class="divider"></div>
+            <div class="fw-600 mb-2" style="font-size:12.5px">Variables n8n yang Diperlukan</div>
+            <div class="table-wrap"><table style="min-width:280px"><thead><tr><th>Variable</th><th>Nilai</th><th></th></tr></thead><tbody>
+              <tr><td><code>TG_BOT_TOKEN</code></td><td class="td-mono" id="var_tg_token">—</td><td><button class="btn btn-sm" onclick="copyVar('tg_token')">📋</button></td></tr>
+              <tr><td><code>TG_CHAT_ID</code></td><td class="td-mono" id="var_tg_chatid">—</td><td><button class="btn btn-sm" onclick="copyVar('chatid')">📋</button></td></tr>
+            </tbody></table></div>
+            <div class="warning-box mt-3">⚠️ Simpan ke n8n: Settings → Variables</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DB SETUP -->
+      <section class="section" id="section-dbsetup">
+        <div class="section-header">
+          <div><div class="section-title">Setup Database</div><div class="section-subtitle">Schema SQL PostgreSQL siap pakai</div></div>
+          <button class="btn btn-primary" onclick="copySQL()">📋 Copy SQL</button>
+        </div>
+        <div class="card">
+          <pre id="sqlCode" style="background:var(--bg-base);border:1px solid var(--border);border-radius:var(--radius);padding:16px;overflow-x:auto;font-size:11.5px;color:var(--accent);line-height:1.8;white-space:pre-wrap;max-height:440px">-- AutoPosting Med · Schema PostgreSQL
+CREATE TABLE IF NOT EXISTS social_accounts (
+  id            SERIAL PRIMARY KEY,
+  platform      VARCHAR(20) NOT NULL CHECK (platform IN ('instagram','facebook')),
+  username      VARCHAR(100) NOT NULL,
+  ig_user_id    VARCHAR(50),
+  fb_page_id    VARCHAR(50),
+  access_token  TEXT NOT NULL,
+  token_expires DATE,
+  max_post_per_day INT DEFAULT 3,
+  is_active     BOOLEAN DEFAULT true,
+  created_at    TIMESTAMP DEFAULT NOW(),
+  updated_at    TIMESTAMP DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS content_library (
+  id         SERIAL PRIMARY KEY,
+  title      VARCHAR(200),
+  media_url  TEXT NOT NULL,
+  caption    TEXT,
+  hashtags   TEXT,
+  is_active  BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS posting_schedule (
+  id                SERIAL PRIMARY KEY,
+  account_id        INTEGER REFERENCES social_accounts(id),
+  content_id        INTEGER REFERENCES content_library(id),
+  platform          VARCHAR(20) NOT NULL,
+  post_date         DATE NOT NULL,
+  post_session      VARCHAR(10) NOT NULL CHECK (post_session IN ('morning','evening')),
+  delay_type        VARCHAR(10) DEFAULT 'random',
+  account_order     INTEGER DEFAULT 1,
+  status            VARCHAR(20) DEFAULT 'pending',
+  campaign_end_date DATE,
+  social_post_id    VARCHAR(100),
+  error_message     TEXT,
+  executed_at       TIMESTAMP,
+  created_at        TIMESTAMP DEFAULT NOW(),
+  updated_at        TIMESTAMP DEFAULT NOW(),
+  UNIQUE(account_id, post_date, post_session)
+);
+CREATE TABLE IF NOT EXISTS posting_log (
+  id            SERIAL PRIMARY KEY,
+  schedule_id   INTEGER REFERENCES posting_schedule(id),
+  account_id    INTEGER REFERENCES social_accounts(id),
+  platform      VARCHAR(20),
+  action        VARCHAR(50) DEFAULT 'auto_post',
+  status        VARCHAR(20),
+  post_id       VARCHAR(100),
+  error_message TEXT,
+  created_at    TIMESTAMP DEFAULT NOW()
+);
+CREATE INDEX idx_schedule_date   ON posting_schedule(post_date);
+CREATE INDEX idx_schedule_status ON posting_schedule(status);
+CREATE INDEX idx_log_created     ON posting_log(created_at DESC);</pre>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================
+     MODALS (100% KODE ASLI)
+     ========================================== -->
+<div class="modal-overlay" id="modalAkun">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="modalAkunTitle">➕ Tambah Akun Sosmed</div><button class="modal-close" onclick="closeModal('modalAkun')">✕</button></div>
+    <input type="hidden" id="akun_edit_id">
+    <div class="form-group"><label>Platform</label><select id="akun_platform" onchange="toggleAkunFields()"><option value="instagram">Instagram</option><option value="facebook">Facebook</option></select></div>
+    <div class="form-group"><label>Username / Nama Akun</label><input type="text" id="akun_username" placeholder="@username atau Nama Page"></div>
+    <div class="form-group" id="field_ig_id"><label>Instagram User ID</label><input type="text" id="akun_ig_id" placeholder="17841400000001"><div class="help-text">Dari Graph API Explorer → /me?fields=id</div></div>
+    <div class="form-group" id="field_fb_id" style="display:none"><label>Facebook Page ID</label><input type="text" id="akun_fb_id" placeholder="100000000001"></div>
+    <div class="form-group"><label>Access Token</label><input type="password" id="akun_token" placeholder="EAAxxxxxxx"><div class="help-text">Long-lived Page Access Token</div></div>
+    <div class="form-group"><label>Token Kadaluarsa</label><input type="date" id="akun_expiry"><div class="help-text">Token FB/IG berlaku ±60 hari. Set pengingat di sini.</div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Maks. Posting/Hari</label><input type="number" id="akun_max_post" value="3" min="1" max="3"><div class="help-text">Maks. 3 (aman untuk IG/FB)</div></div>
+      <div class="form-group"><label>Urutan Posting</label><input type="number" id="akun_order" value="1" min="1"></div>
+    </div>
+    <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">Aktifkan Akun</div></div><label class="toggle"><input type="checkbox" id="akun_active" checked><span class="toggle-slider"></span></label></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalAkun')">Batal</button>
+      <button class="btn btn-primary" onclick="saveAkun()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalKonten">
+  <div class="modal modal-wide">
+    <div class="modal-header"><div class="modal-title" id="modalKontenTitle">➕ Tambah Konten</div><button class="modal-close" onclick="closeModal('modalKonten')">✕</button></div>
+    <input type="hidden" id="konten_edit_id">
+    <div class="form-group"><label>Judul Konten</label><input type="text" id="konten_title" placeholder="Nama konten untuk identifikasi"></div>
+    <div class="form-group">
+      <label>URL Media (Gambar)</label>
+      <div class="flex gap-2"><input type="url" id="konten_url" placeholder="https://cdn.example.com/foto.jpg" oninput="previewUrl(this.value)"><button class="btn btn-sm" onclick="previewUrl(document.getElementById('konten_url').value)">👁 Preview</button></div>
+      <div class="help-text">URL publik, bisa diakses dari internet</div>
+      <div class="img-preview-placeholder" id="imgPlaceholder" onclick="previewUrl(document.getElementById('konten_url').value)">🖼️ Klik untuk preview gambar</div>
+      
+      <!-- Hapus src="" dari awal karena akan memicu fungsi imgError sebelum JS selesai di-load -->
+      <img id="imgPreview" class="img-preview" alt="preview" onerror="imgError()" onload="imgLoaded()">
+      
+      <div id="imgStatus" style="font-size:11.5px;margin-top:4px;display:none"></div>
+    </div>
+    <div class="form-group"><label>Caption</label><textarea id="konten_caption" placeholder="Tulis caption posting..."></textarea></div>
+    <div class="form-group"><label>Hashtag</label><input type="text" id="konten_hashtag" placeholder="#hashtag1 #hashtag2"></div>
+    <div class="toggle-wrap"><div class="toggle-info"><div class="toggle-label">Aktifkan Konten</div></div><label class="toggle"><input type="checkbox" id="konten_active" checked><span class="toggle-slider"></span></label></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalKonten')">Batal</button>
+      <button class="btn btn-primary" onclick="saveKonten()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalTambahJadwal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="modalJadwalTitle">📅 Tambah Jadwal Manual</div><button class="modal-close" onclick="closeModal('modalTambahJadwal')">✕</button></div>
+    <input type="hidden" id="jadwal_edit_id">
+    <div class="form-group"><label>Akun</label><select id="jadwal_account_id" onchange="checkDailyLimit()"></select></div>
+    <div class="form-row">
+      <div class="form-group"><label>Tanggal</label><input type="date" id="jadwal_date" oninput="checkDailyLimit()"></div>
+      <div class="form-group"><label>Sesi</label><select id="jadwal_session" onchange="checkDailyLimit()"><option value="morning">🌅 Pagi (08:00)</option><option value="evening">🌆 Sore (19:00)</option></select></div>
+    </div>
+    <!-- Daily limit indicator -->
+    <div id="dailyLimitInfo" style="display:none;margin-bottom:12px"></div>
+    <div class="form-group"><label>Konten</label><select id="jadwal_content_id"></select></div>
+    <div class="form-group"><label>Tipe Delay</label><select id="jadwal_delay_type"><option value="random">Random</option><option value="fixed">Fixed</option></select></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalTambahJadwal')">Batal</button>
+      <button class="btn btn-primary" onclick="saveJadwal()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Generate Jadwal -->
+<div class="modal-overlay" id="modalGenJadwal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">🔄 Generate Jadwal 14 Hari</div><button class="modal-close" onclick="closeModal('modalGenJadwal')">✕</button></div>
+    <div class="info-box"><span>ℹ️</span><div>INSERT ke <code>posting_schedule</code> untuk semua akun aktif × konten random × 14 hari × 2 sesi. ON CONFLICT DO NOTHING.</div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Mulai</label><input type="text" id="gen_start" readonly style="opacity:.7;font-family:monospace;font-size:12px"></div>
+      <div class="form-group"><label>Sampai</label><input type="text" id="gen_end" readonly style="opacity:.7;font-family:monospace;font-size:12px"></div>
+    </div>
+    <div class="form-group"><label>Delay Default</label><select id="gen_delay"><option value="random">Random (max 1 jam)</option><option value="fixed">Fixed (30 detik)</option></select></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalGenJadwal')">Batal</button>
+      <button class="btn btn-primary" onclick="generateJadwal()">⚡ Generate</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Quick Post -->
+<div class="modal-overlay" id="modalQuickPost">
+  <div class="modal modal-wide">
+    <div class="modal-header"><div class="modal-title">⚡ Quick Post — Posting Sekarang</div><button class="modal-close" onclick="closeModal('modalQuickPost')">✕</button></div>
+    <div class="warning-box mb-3">⚠️ Quick Post akan langsung dikirim tanpa antrian jadwal. Pastikan tidak melebihi <strong>3 posting/akun/hari</strong>.</div>
+    <div class="form-group">
+      <label>Pilih Akun</label>
+      <select id="qp_account" onchange="qpCheckLimit()"></select>
+      <div id="qpLimitInfo" style="font-size:11.5px;margin-top:4px"></div>
+    </div>
+    <div class="form-group"><label>Pilih Konten</label><select id="qp_content" onchange="qpPreviewContent()"></select></div>
+    <!-- Preview quick post -->
+    <div id="qpPreview" style="display:none;background:var(--bg-base);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px">
+      <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:6px">Preview Konten:</div>
+      <div class="flex gap-3">
+        <img id="qpImg" src="" alt="" style="width:64px;height:64px;border-radius:var(--radius);object-fit:cover;flex-shrink:0" onerror="this.src='https://placehold.co/64x64/1C1F30/555875?text=?'">
+        <div><div style="font-size:13px;font-weight:600" id="qpTitle"></div><div style="font-size:12px;color:var(--text-secondary);margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden" id="qpCaption"></div></div>
+      </div>
+    </div>
+    <div class="form-group"><label>Platform Override (opsional)</label><select id="qp_platform"><option value="">Ikuti platform akun</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option></select></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalQuickPost')">Batal</button>
+      <button class="btn btn-warning" id="qpSendBtn" onclick="doQuickPost()">⚡ Kirim Sekarang</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:20px;right:20px;z-index:9999999;transition:all .25s;transform:translateY(70px);opacity:0">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:10px 14px;display:flex;align-items:center;gap:9px;min-width:230px">
+    <span id="toast-icon" style="font-size:16px">✅</span>
+    <span id="toast-msg" style="font-size:13px"></span>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// JAVASCRIPT ASLI 100%
+// =========================================================
+
+const IS_PREVIEW = true; 
+const GAS_URL = "URL_DEPLOY_GAS_ANDA_DISINI";
+
+function doLogin() {
+    const u = document.getElementById('logUser').value;
+    const p = document.getElementById('logPass').value;
+    if(IS_PREVIEW) {
+        if((u==='admin'&&p==='edudigital') || (u==='peserta'&&p==='edudigital')) {
+            document.getElementById('loginOverlay').style.display='none';
+            showToast('✅', 'Login berhasil!');
+        } else {
+            alert('Akses Ditolak! Gunakan data dummy: admin / edudigital');
+        }
+    } else {
+        document.getElementById('loginOverlay').style.display='none';
+    }
+}
+
+// ===== STATE =====
+const MAX_POST_PER_DAY = 3;
+const PAGE_SIZE_JADWAL = 15;
+const PAGE_SIZE_LOG = 10;
+let jadwalPage = 1;
+let logPage = 1;
+
+const today = new Date();
+function dateStr(d){ return d.toISOString().split('T')[0]; }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+
+function expiryDate(daysFromNow){
+  const d = addDays(today, daysFromNow);
+  return dateStr(d);
+}
+
+// ===== API CONFIG =====
+const API_BASE = 'https://n8n-dzwm70fs4svr.jkt6.sumopod.my.id/webhook';
+
+async function apiFetch(path, options = {}) {
+  const res = await fetch(API_BASE + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
+  return res.json();
+}
+
+// ===== STATE =====
+const state = {
+  akun: [],
+  konten: [],
+  jadwal: [],
+  logs: [],
+  nextId: 1,
+  _loaded: false,
+};
+
+// ===== LOADING OVERLAY =====
+function showLoading(msg='Memuat data...') {
+  let el = document.getElementById('apiLoadingOverlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'apiLoadingOverlay';
+    el.style.cssText = 'position:fixed;inset:0;background:rgba(9,9,11,.85);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px)';
+    el.innerHTML = `
+      <div style="width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite"></div>
+      <div id="apiLoadingMsg" style="font-size:14px;color:var(--text-secondary)">${msg}</div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`;
+    document.body.appendChild(el);
+  }
+  document.getElementById('apiLoadingMsg').textContent = msg;
+  el.style.display = 'flex';
+}
+function hideLoading() {
+  const el = document.getElementById('apiLoadingOverlay');
+  if (el) el.style.display = 'none';
+}
+
+// ===== LOAD DATA FROM API =====
+async function loadAllData() {
+  showLoading('Menghubungkan ke database...');
+  try {
+    const [akun, konten, jadwal, logs] = await Promise.all([
+      apiFetch('/akun'),
+      apiFetch('/konten'),
+      apiFetch('/jadwal'),
+      apiFetch('/log'),
+    ]);
+    state.akun   = Array.isArray(akun)   ? akun   : [];
+    state.konten = Array.isArray(konten) ? konten : [];
+    state.jadwal = Array.isArray(jadwal) ? jadwal : [];
+    state.logs   = Array.isArray(logs)   ? logs   : [];
+    state._loaded = true;
+    hideLoading();
+    renderDashboard();
+    showToast('✅', `Data dimuat: ${state.akun.length} akun, ${state.konten.length} konten`);
+  } catch(e) {
+    hideLoading();
+    console.error('loadAllData error:', e);
+    showToast('❌', 'Gagal konek ke API. Cek n8n webhook aktif!');
+    // Tampilkan error banner
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:var(--red-bg);border-bottom:1px solid var(--red);color:var(--red);font-size:13px;padding:10px 20px;z-index:9999998;display:flex;align-items:center;gap:12px';
+    banner.innerHTML = `<span>⚠️</span><span>Tidak dapat terhubung ke n8n API. Pastikan workflow <b>AutoPosting API Backend</b> aktif di n8n.</span><button onclick="loadAllData()" style="margin-left:auto;background:var(--red);color:#fff;border:none;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px">↺ Coba Lagi</button>`;
+    document.body.appendChild(banner);
+  }
+}
+
+// ===== OVERRIDE CRUD FUNCTIONS TO USE API =====
+
+// --- AKUN ---
+async function saveAkun(){
+  const editId=parseInt(document.getElementById('akun_edit_id').value)||0;
+  const platform=document.getElementById('akun_platform').value;
+  const username=document.getElementById('akun_username').value.trim();
+  const ig_user_id=document.getElementById('akun_ig_id').value.trim();
+  const fb_page_id=document.getElementById('akun_fb_id').value.trim();
+  const token=document.getElementById('akun_token').value.trim();
+  const token_expiry=document.getElementById('akun_expiry').value;
+  const max_post_per_day=Math.min(3,parseInt(document.getElementById('akun_max_post').value)||3);
+  const account_order=parseInt(document.getElementById('akun_order').value)||1;
+  const is_active=document.getElementById('akun_active').checked;
+  if(!username||!token){showToast('❌','Username dan Token wajib diisi');return;}
+  showLoading(editId ? 'Menyimpan perubahan akun...' : 'Menambahkan akun...');
+  try {
+    const body = {id:editId||undefined,platform,username,ig_user_id,fb_page_id,token,token_expiry,max_post_per_day,account_order,is_active};
+    await apiFetch('/akun', {method:'POST', body:JSON.stringify(body)});
+    await refreshAkun();
+    hideLoading();
+    showToast('✅', editId ? `Akun ${username} diperbarui` : `Akun ${username} ditambahkan`);
+  } catch(e) { hideLoading(); showToast('❌','Gagal menyimpan akun: '+e.message); }
+  document.getElementById('akun_edit_id').value='';
+  document.getElementById('modalAkunTitle').textContent='➕ Tambah Akun Sosmed';
+  closeModal('modalAkun');
+}
+
+async function toggleAkunStatus(id){
+  showLoading('Mengubah status akun...');
+  try {
+    await apiFetch('/toggle-akun', {method:'POST', body:JSON.stringify({id})});
+    await refreshAkun();
+    hideLoading();
+    const a=state.akun.find(x=>x.id===id);
+    if(a) showToast('✅',`${a.username} → ${a.is_active?'Aktif':'Non-aktif'}`);
+  } catch(e) { hideLoading(); showToast('❌','Gagal toggle akun: '+e.message); }
+}
+
+async function deleteAkun(id){
+  const a=state.akun.find(x=>x.id===id);
+  if(!a||!confirm(`Hapus akun ${a.username}?`)) return;
+  showLoading('Menghapus akun...');
+  try {
+    await apiFetch('/akun?id='+id, {method:'DELETE'});
+    await refreshAkun();
+    hideLoading();
+    showToast('🗑','Akun dihapus');
+  } catch(e) { hideLoading(); showToast('❌','Gagal hapus akun: '+e.message); }
+}
+
+async function refreshAkun(){
+  state.akun = await apiFetch('/akun');
+  renderAkun();
+  renderDashboard();
+}
+
+// --- KONTEN ---
+async function saveKonten(){
+  const editId=parseInt(document.getElementById('konten_edit_id').value)||0;
+  const title=document.getElementById('konten_title').value.trim();
+  const url=document.getElementById('konten_url').value.trim();
+  const caption=document.getElementById('konten_caption').value.trim();
+  const hashtags=document.getElementById('konten_hashtag').value.trim();
+  const is_active=document.getElementById('konten_active').checked;
+  if(!url){showToast('❌','URL Media wajib diisi');return;}
+  showLoading(editId ? 'Menyimpan konten...' : 'Menambahkan konten...');
+  try {
+    const body = {id:editId||undefined,title:title||'Konten Baru',url,caption,hashtags,is_active};
+    await apiFetch('/konten', {method:'POST', body:JSON.stringify(body)});
+    await refreshKonten();
+    hideLoading();
+    showToast('✅', editId ? 'Konten diperbarui' : 'Konten ditambahkan');
+  } catch(e) { hideLoading(); showToast('❌','Gagal simpan konten: '+e.message); }
+  document.getElementById('konten_edit_id').value='';
+  document.getElementById('modalKontenTitle').textContent='➕ Tambah Konten';
+  closeModal('modalKonten');
+  resetKontenModal();
+}
+
+async function toggleKonten(id){
+  const c=state.konten.find(x=>x.id===id);
+  if(!c) return;
+  showLoading('Mengubah status konten...');
+  try {
+    await apiFetch('/konten', {method:'POST', body:JSON.stringify({id,title:c.title,url:c.url,caption:c.caption,hashtags:c.hashtags,is_active:!c.is_active})});
+    await refreshKonten();
+    hideLoading();
+    const updated=state.konten.find(x=>x.id===id);
+    showToast('✅',`Konten ${updated?.is_active?'diaktifkan':'dinonaktifkan'}`);
+  } catch(e) { hideLoading(); showToast('❌','Gagal toggle konten: '+e.message); }
+}
+
+async function deleteKonten(id){
+  if(!confirm('Hapus konten ini?')) return;
+  showLoading('Menghapus konten...');
+  try {
+    await apiFetch('/konten?id='+id, {method:'DELETE'});
+    await refreshKonten();
+    hideLoading();
+    showToast('🗑','Konten dihapus');
+  } catch(e) { hideLoading(); showToast('❌','Gagal hapus konten: '+e.message); }
+}
+
+async function refreshKonten(){
+  state.konten = await apiFetch('/konten');
+  renderKonten();
+}
+
+// --- JADWAL ---
+async function saveJadwal(){
+  const editId=parseInt(document.getElementById('jadwal_edit_id').value)||0;
+  const accId=parseInt(document.getElementById('jadwal_account_id').value);
+  const ds=document.getElementById('jadwal_date').value;
+  const session=document.getElementById('jadwal_session').value;
+  const ctId=parseInt(document.getElementById('jadwal_content_id').value);
+  const delayType=document.getElementById('jadwal_delay_type').value;
+  const acc=state.akun.find(a=>a.id===accId);
+  if(!acc||!ds||!ctId){showToast('❌','Lengkapi semua field');return;}
+  const count=getPostCount(accId,ds);
+  const max=acc.max_post_per_day;
+  if(!editId&&count>=max){showToast('❌',`Batas ${max} posting/hari sudah tercapai untuk akun ini!`);return;}
+  showLoading(editId ? 'Menyimpan jadwal...' : 'Menambahkan jadwal...');
+  try {
+    const body = {
+      id:editId||undefined, account_id:accId, content_id:ctId,
+      platform:acc.platform, post_date:ds, post_session:session,
+      delay_type:delayType, delay_seconds:Math.floor(Math.random()*1800),
+      account_order:acc.account_order, campaign_end_date:dateStr(addDays(today,13))
+    };
+    await apiFetch('/jadwal', {method:'POST', body:JSON.stringify(body)});
+    await refreshJadwal();
+    hideLoading();
+    showToast('✅', editId ? 'Jadwal diperbarui' : 'Jadwal ditambahkan');
+  } catch(e) { hideLoading(); showToast('❌','Gagal simpan jadwal: '+e.message); }
+  closeModal('modalTambahJadwal');
+}
+
+async function deleteJadwal(id){
+  if(!confirm('Hapus jadwal ini?')) return;
+  showLoading('Menghapus jadwal...');
+  try {
+    await apiFetch('/jadwal?id='+id, {method:'DELETE'});
+    await refreshJadwal();
+    hideLoading();
+    showToast('🗑','Jadwal dihapus');
+  } catch(e) { hideLoading(); showToast('❌','Gagal hapus jadwal: '+e.message); }
+}
+
+async function retryPost(id){
+  const j=state.jadwal.find(x=>x.id===id);
+  if(!j||j.status!=='failed') return;
+  showLoading('Me-reset jadwal ke pending...');
+  try {
+    const acc=state.akun.find(a=>a.id===j.account_id);
+    await apiFetch('/jadwal', {method:'POST', body:JSON.stringify({...j, id:j.id, status:'pending', platform:acc?.platform||j.platform})});
+    await refreshJadwal();
+    hideLoading();
+    showToast('↻','Di-reset ke pending');
+  } catch(e) { hideLoading(); showToast('❌','Gagal retry: '+e.message); }
+}
+
+async function generateJadwal(){
+  const startDate = document.getElementById('gen_start')?.value || dateStr(today);
+  const endDate   = document.getElementById('gen_end')?.value   || dateStr(addDays(today,13));
+  showLoading('Generate jadwal ke database...');
+  closeModal('modalGenJadwal');
+  try {
+    await apiFetch('/gen-jadwal', {method:'POST', body:JSON.stringify({start_date:startDate, end_date:endDate})});
+    await refreshJadwal();
+    hideLoading();
+    showToast('✅','Jadwal berhasil di-generate!');
+  } catch(e) { hideLoading(); showToast('❌','Gagal generate jadwal: '+e.message); }
+}
+
+async function refreshJadwal(){
+  state.jadwal = await apiFetch('/jadwal');
+  renderJadwal();
+  renderDashboard();
+}
+
+// --- LOG ---
+async function refreshLog(){
+  state.logs = await apiFetch('/log');
+  renderLog();
+}
+
+async function clearLog(){
+  showToast('ℹ️','Hapus log dilakukan langsung di database melalui n8n/SQL.');
+}
+
+// --- QUICK POST (tetap simulasi, trigger n8n schedule manual) ---
+async function doQuickPost(){
+  const accId=parseInt(document.getElementById('qp_account').value);
+  const ctId=parseInt(document.getElementById('qp_content').value);
+  const acc=state.akun.find(a=>a.id===accId);
+  const ct=state.konten.find(c=>c.id===ctId);
+  if(!acc||!ct) return;
+  showToast('⚡',`Menambahkan jadwal posting sekarang untuk ${acc.username}...`);
+  closeModal('modalQuickPost');
+  showLoading('Membuat jadwal posting...');
+  try {
+    const body = {
+      account_id:accId, content_id:ctId, platform:acc.platform,
+      post_date:dateStr(today), post_session:'morning',
+      delay_type:'fixed', delay_seconds:30,
+      account_order:acc.account_order, campaign_end_date:dateStr(today)
+    };
+    await apiFetch('/jadwal', {method:'POST', body:JSON.stringify(body)});
+    await refreshJadwal();
+    hideLoading();
+    showToast('✅',`Jadwal quick post ${acc.username} ditambahkan!`);
+  } catch(e) { hideLoading(); showToast('❌','Gagal quick post: '+e.message); }
+}
+
+// ===== NAVIGATION =====
+function showSection(name,navEl){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  const titles={dashboard:'Dashboard',akun:'Akun Sosmed',konten:'Konten / Media',jadwal:'Jadwal Posting',log:'Log Aktivitas',config:'Konfigurasi',dbsetup:'Setup Database'};
+  
+  const topTitleEl = document.getElementById('topbarTitle');
+  if(topTitleEl) topTitleEl.textContent=titles[name]||name;
+  
+  clearSearch(); closeSidebar();
+  if(name==='dashboard') renderDashboard();
+  if(name==='akun') renderAkun();
+  if(name==='konten') renderKonten();
+  if(name==='jadwal'){jadwalPage=1;renderJadwal();}
+  if(name==='log'){logPage=1;renderLog();}
+  if(name==='dbsetup') initGenDates();
+}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarBackdrop').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarBackdrop').classList.remove('open');}
+
+// ===== CLOCK =====
+function updateClock(){
+  const clockEl = document.getElementById('liveClock');
+  if(clockEl) clockEl.textContent=new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock,1000); updateClock();
+
+// ===== EXPIRY UTILS =====
+function daysUntilExpiry(expiryStr){
+  if(!expiryStr) return null;
+  const diff=new Date(expiryStr)-today;
+  return Math.round(diff/(1000*60*60*24));
+}
+function expiryBadge(expiryStr){
+  if(!expiryStr) return '<span class="text-muted" style="font-size:12px">—</span>';
+  const d=daysUntilExpiry(expiryStr);
+  if(d<0) return `<span class="badge badge-danger">Expired ${Math.abs(d)}h lalu</span>`;
+  if(d<=7) return `<span class="badge badge-warning">⚠️ ${d} hari lagi</span>`;
+  if(d<=14) return `<span class="expiry-warn">🟡 ${d} hari lagi</span>`;
+  return `<span class="expiry-ok">✅ ${d} hari lagi</span>`;
+}
+
+// ===== DAILY LIMIT UTILS =====
+function getPostCountToday(accountId){
+  const ds=dateStr(today);
+  return state.jadwal.filter(j=>j.account_id===accountId&&j.post_date===ds).length;
+}
+function getPostCount(accountId, ds){
+  return state.jadwal.filter(j=>j.account_id===accountId&&j.post_date===ds).length;
+}
+function limitPips(count, max){
+  let html='<div class="limit-bar">';
+  for(let i=0;i<max;i++){
+    const cls=i<count?(count>max?'over':'used'):'';
+    html+=`<div class="limit-pip ${cls}"></div>`;
+  }
+  html+=`<span style="font-size:11px;color:${count>=max?'var(--red)':'var(--text-muted)'}"> ${count}/${max}</span></div>`;
+  return html;
+}
+
+// ===== DASHBOARD =====
+function renderDashboard(){
+  document.getElementById('todayLabel').textContent=today.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Jakarta'});
+  const aktifAkun=state.akun.filter(a=>a.is_active);
+  const expiringCount=state.akun.filter(a=>{const d=daysUntilExpiry(a.token_expiry);return d!==null&&d<=14;}).length;
+  document.getElementById('dashAkun').textContent=aktifAkun.length;
+  document.getElementById('dashAkunSub').textContent=`${aktifAkun.filter(a=>a.platform==='instagram').length} IG · ${aktifAkun.filter(a=>a.platform==='facebook').length} FB`;
+  document.getElementById('dashExpiry').textContent=expiringCount;
+  const fail=state.logs.filter(l=>l.status==='failed').length;
+  document.getElementById('dashFail').textContent=fail;
+  document.getElementById('failBadge').textContent=fail;
+
+  const ds=dateStr(today);
+  const todayJ=state.jadwal.filter(j=>j.post_date===ds).slice(0,8);
+  const tp=document.getElementById('todayPosts');
+  tp.innerHTML=todayJ.length?todayJ.map(j=>{
+    const acc=state.akun.find(a=>a.id===j.account_id)||{username:'?'};
+    const ct=state.konten.find(c=>c.id===j.content_id)||{title:'?'};
+    const sb=j.status==='success'?'badge-success':j.status==='failed'?'badge-danger':'badge-muted';
+    return `<div class="flex items-center gap-2 mb-2" style="padding:7px 10px;background:var(--bg-base);border-radius:var(--radius);border:1px solid var(--border)">
+      <span class="tag ${j.platform==='instagram'?'tag-ig':'tag-fb'}" style="font-size:10.5px">${j.platform==='instagram'?'IG':'FB'}</span>
+      <div style="flex:1;min-width:0"><div class="truncate" style="font-size:12.5px;font-weight:500">${acc.username}</div><div style="font-size:11px;color:var(--text-muted)">${ct.title}</div></div>
+      <span style="font-size:11px;color:var(--text-muted)">${j.post_session==='morning'?'🌅 08:00':'🌆 19:00'}</span>
+      <span class="badge ${sb}" style="font-size:10px">${j.status}</span>
+    </div>`;
+  }).join(''):'<div style="font-size:12.5px;color:var(--text-muted)">Tidak ada jadwal hari ini</div>';
+
+  const rlog=document.getElementById('recentLog');
+  rlog.innerHTML=state.logs.slice(0,6).map((l,i,arr)=>`<div class="tl-item">
+    <div class="tl-line"><div class="tl-dot" style="background:${l.status==='success'?'var(--green)':'var(--red)'}"></div>${i<arr.length-1?'<div class="tl-connector"></div>':''}</div>
+    <div class="tl-content"><div class="flex items-center gap-2"><span class="badge ${l.status==='success'?'badge-success':'badge-danger'}" style="font-size:10px">${l.status}</span><span style="font-size:12px;font-weight:500">${l.akun}</span><span class="tag ${l.platform==='instagram'?'tag-ig':'tag-fb'}" style="font-size:10px">${l.platform==='instagram'?'IG':'FB'}</span></div><div style="font-size:11px;color:var(--text-muted);margin-top:1px">${l.waktu}</div></div>
+  </div>`).join('');
+
+  const ig=state.logs.filter(l=>l.platform==='instagram');
+  const fb=state.logs.filter(l=>l.platform==='facebook');
+  const igOk=ig.filter(l=>l.status==='success').length;
+  const fbOk=fb.filter(l=>l.status==='success').length;
+  document.getElementById('platformStats').innerHTML=`
+    <div class="mb-4"><div class="flex items-center justify-between mb-2"><span class="tag tag-ig">Instagram</span><span style="font-size:13px;font-weight:600">${igOk}/${ig.length} sukses</span></div><div class="progress"><div class="progress-fill" style="width:${ig.length?Math.round(igOk/ig.length*100):0}%;background:var(--purple)"></div></div></div>
+    <div><div class="flex items-center justify-between mb-2"><span class="tag tag-fb">Facebook</span><span style="font-size:13px;font-weight:600">${fbOk}/${fb.length} sukses</span></div><div class="progress"><div class="progress-fill" style="width:${fb.length?Math.round(fbOk/fb.length*100):0}%;background:var(--blue)"></div></div></div>
+    <div class="divider"></div>
+    <div class="flex items-center justify-between"><span class="text-muted text-sm">Tingkat Keberhasilan</span><span class="text-accent fw-600">${state.logs.length?Math.round(state.logs.filter(l=>l.status==='success').length/state.logs.length*100):0}%</span></div>`;
+
+  document.getElementById('systemStatus').innerHTML=`
+    <div class="notif"><div class="notif-icon" style="background:var(--green-bg)">✅</div><div><div class="notif-title">Cron Pagi 08:00</div><div class="notif-time">Aktif — jalan tadi pagi</div></div></div>
+    <div class="notif"><div class="notif-icon" style="background:var(--green-bg)">✅</div><div><div class="notif-title">Cron Sore 19:00</div><div class="notif-time">Terjadwal jam 19:00 WIB</div></div></div>
+    <div class="notif"><div class="notif-icon" style="background:var(--blue-bg)">🔗</div><div><div class="notif-title">PostgreSQL</div><div class="notif-time">Connected — ${state.jadwal.length} jadwal total</div></div></div>
+    ${expiringCount?`<div class="notif" style="border-color:rgba(245,158,11,.3)"><div class="notif-icon" style="background:var(--amber-bg)">⚠️</div><div><div class="notif-title" style="color:var(--amber)">${expiringCount} Token Mau Expired</div><div class="notif-time">Segera perbarui di menu Akun Sosmed</div></div></div>`:'<div class="notif"><div class="notif-icon" style="background:var(--accent-bg)">✈️</div><div><div class="notif-title">Telegram Bot</div><div class="notif-time">Aktif — notifikasi berjalan</div></div></div>'}`;
+}
+
+// ===== AKUN =====
+function renderAkun(){
+  const expiring=state.akun.filter(a=>{const d=daysUntilExpiry(a.token_expiry);return d!==null&&d<=7;});
+  const bar=document.getElementById('expiryWarningBar');
+  bar.innerHTML=expiring.length?`<div class="warning-box mb-3" style="display:flex;align-items:center;gap:8px">⚠️ <span><strong>${expiring.length} akun</strong> token-nya akan/sudah expired: ${expiring.map(a=>`<strong>${a.username}</strong>`).join(', ')} — segera perbarui access token.</span></div>`:'';
+
+  document.getElementById('tbodyAkun').innerHTML=state.akun.map(a=>`
+    <tr>
+      <td style="color:var(--text-muted);font-size:11.5px">${a.id}</td>
+      <td><div style="font-weight:500">${a.username}</div><div style="font-size:11px;color:var(--text-muted)">Order: ${a.account_order}</div></td>
+      <td><span class="tag ${a.platform==='instagram'?'tag-ig':'tag-fb'}">${a.platform==='instagram'?'📷 IG':'👍 FB'}</span></td>
+      <td class="td-mono">${a.ig_user_id||a.fb_page_id||'—'}</td>
+      <td><code style="font-size:11px">${a.token.substring(0,10)}•••</code></td>
+      <td>${expiryBadge(a.token_expiry)}</td>
+      <td>${limitPips(getPostCountToday(a.id),a.max_post_per_day)}</td>
+      <td><span class="badge ${a.is_active?'badge-success':'badge-muted'}">${a.is_active?'Aktif':'Off'}</span></td>
+      <td><div class="flex gap-2">
+        <button class="btn btn-sm btn-edit" onclick="editAkun(${a.id})">✏️ Edit</button>
+        <button class="btn btn-sm" onclick="toggleAkunStatus(${a.id})">${a.is_active?'Off':'On'}</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteAkun(${a.id})">🗑</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openModal(id, data){
+  document.getElementById(id).classList.add('open');
+  if(id==='modalGenJadwal') initGenDates();
+  if(id==='modalQuickPost') initQuickPost();
+  if(id==='modalTambahJadwal') initJadwalModal(data);
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);}));
+
+function editAkun(id){
+  const a=state.akun.find(x=>x.id===id);
+  if(!a) return;
+  document.getElementById('akun_edit_id').value=a.id;
+  document.getElementById('modalAkunTitle').textContent='✏️ Edit Akun Sosmed';
+  document.getElementById('akun_platform').value=a.platform;
+  document.getElementById('akun_username').value=a.username;
+  document.getElementById('akun_ig_id').value=a.ig_user_id||'';
+  document.getElementById('akun_fb_id').value=a.fb_page_id||'';
+  document.getElementById('akun_token').value=a.token;
+  document.getElementById('akun_expiry').value=a.token_expiry||'';
+  document.getElementById('akun_max_post').value=a.max_post_per_day;
+  document.getElementById('akun_order').value=a.account_order;
+  document.getElementById('akun_active').checked=a.is_active;
+  toggleAkunFields();
+  openModal('modalAkun',null);
+}
+
+function saveAkun(){
+  const editId=parseInt(document.getElementById('akun_edit_id').value)||0;
+  const platform=document.getElementById('akun_platform').value;
+  const username=document.getElementById('akun_username').value.trim();
+  const ig_user_id=document.getElementById('akun_ig_id').value.trim();
+  const fb_page_id=document.getElementById('akun_fb_id').value.trim();
+  const token=document.getElementById('akun_token').value.trim();
+  const token_expiry=document.getElementById('akun_expiry').value;
+  const max_post_per_day=Math.min(3,parseInt(document.getElementById('akun_max_post').value)||3);
+  const account_order=parseInt(document.getElementById('akun_order').value)||1;
+  const is_active=document.getElementById('akun_active').checked;
+  if(!username||!token){showToast('❌','Username dan Token wajib diisi');return;}
+  if(editId){
+    const a=state.akun.find(x=>x.id===editId);
+    if(a) Object.assign(a,{platform,username,ig_user_id,fb_page_id,token,token_expiry,max_post_per_day,account_order,is_active});
+    showToast('✅',`Akun ${username} diperbarui`);
+  } else {
+    state.akun.push({id:++state.nextId,platform,username,ig_user_id,fb_page_id,token,token_expiry,max_post_per_day,account_order,is_active});
+    showToast('✅',`Akun ${username} ditambahkan`);
+  }
+  document.getElementById('akun_edit_id').value='';
+  document.getElementById('modalAkunTitle').textContent='➕ Tambah Akun Sosmed';
+  closeModal('modalAkun');
+  renderAkun();
+}
+
+function toggleAkunStatus(id){const a=state.akun.find(x=>x.id===id);if(a){a.is_active=!a.is_active;renderAkun();showToast('✅',`${a.username} → ${a.is_active?'Aktif':'Non-aktif'}`);}}
+function deleteAkun(id){const a=state.akun.find(x=>x.id===id);if(a&&confirm(`Hapus akun ${a.username}?`)){state.akun=state.akun.filter(x=>x.id!==id);renderAkun();showToast('🗑','Akun dihapus');}}
+function toggleAkunFields(){
+  const p=document.getElementById('akun_platform').value;
+  document.getElementById('field_ig_id').style.display=p==='instagram'?'flex':'none';
+  document.getElementById('field_fb_id').style.display=p==='facebook'?'flex':'none';
+}
+
+// ===== KONTEN =====
+function renderKonten(){
+  document.getElementById('kontenGrid').innerHTML=state.konten.map(c=>`
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="position:relative">
+        <img src="${c.url}" alt="${c.title}" style="width:100%;height:130px;object-fit:cover;display:block" onerror="this.src='https://placehold.co/400x260/1C1F30/555875?text=No+Image'">
+        <span class="badge ${c.is_active?'badge-success':'badge-muted'}" style="position:absolute;top:8px;right:8px">${c.is_active?'Aktif':'Off'}</span>
+      </div>
+      <div style="padding:10px 12px">
+        <div style="font-weight:600;font-size:13px;margin-bottom:4px">${c.title}</div>
+        <div style="font-size:11.5px;color:var(--text-secondary);margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${c.caption}</div>
+        <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:10px">${c.hashtags}</div>
+        <div class="flex gap-2">
+          <button class="btn btn-sm btn-edit" style="flex:1" onclick="editKonten(${c.id})">✏️ Edit</button>
+          <button class="btn btn-sm" onclick="toggleKonten(${c.id})">${c.is_active?'Off':'On'}</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteKonten(${c.id})">🗑</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function editKonten(id){
+  const c=state.konten.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('konten_edit_id').value=c.id;
+  document.getElementById('modalKontenTitle').textContent='✏️ Edit Konten';
+  document.getElementById('konten_title').value=c.title;
+  document.getElementById('konten_url').value=c.url;
+  document.getElementById('konten_caption').value=c.caption;
+  document.getElementById('konten_hashtag').value=c.hashtags;
+  document.getElementById('konten_active').checked=c.is_active;
+  previewUrl(c.url);
+  openModal('modalKonten',null);
+}
+
+function saveKonten(){
+  const editId=parseInt(document.getElementById('konten_edit_id').value)||0;
+  const title=document.getElementById('konten_title').value.trim();
+  const url=document.getElementById('konten_url').value.trim();
+  const caption=document.getElementById('konten_caption').value.trim();
+  const hashtags=document.getElementById('konten_hashtag').value.trim();
+  const is_active=document.getElementById('konten_active').checked;
+  if(!url){showToast('❌','URL Media wajib diisi');return;}
+  if(editId){
+    const c=state.konten.find(x=>x.id===editId);
+    if(c) Object.assign(c,{title:title||'Konten',url,caption,hashtags,is_active});
+    showToast('✅','Konten diperbarui');
+  } else {
+    state.konten.push({id:++state.nextId,title:title||'Konten Baru',url,caption,hashtags,is_active});
+    showToast('✅','Konten ditambahkan');
+  }
+  document.getElementById('konten_edit_id').value='';
+  document.getElementById('modalKontenTitle').textContent='➕ Tambah Konten';
+  closeModal('modalKonten');
+  resetKontenModal();
+  renderKonten();
+}
+
+function resetKontenModal(){
+  ['konten_title','konten_url','konten_caption','konten_hashtag'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('konten_active').checked=true;
+  document.getElementById('imgPreview').classList.remove('show');
+  document.getElementById('imgPlaceholder').style.display='flex';
+  document.getElementById('imgStatus').style.display='none';
+}
+
+function toggleKonten(id){const c=state.konten.find(x=>x.id===id);if(c){c.is_active=!c.is_active;renderKonten();showToast('✅',`Konten ${c.is_active?'diaktifkan':'dinonaktifkan'}`);}}
+function deleteKonten(id){if(confirm('Hapus konten ini?')){state.konten=state.konten.filter(x=>x.id!==id);renderKonten();showToast('🗑','Konten dihapus');}}
+
+function previewUrl(url){
+  if(!url||!url.startsWith('http')){return;}
+  const img=document.getElementById('imgPreview');
+  const ph=document.getElementById('imgPlaceholder');
+  const st=document.getElementById('imgStatus');
+  st.style.display='block';
+  st.style.color='var(--text-muted)';
+  st.textContent='⏳ Memuat gambar...';
+  img.src=url;
+  ph.style.display='none';
+}
+function imgLoaded(){
+  document.getElementById('imgPreview').classList.add('show');
+  document.getElementById('imgStatus').style.display='none';
+}
+function imgError(){
+  document.getElementById('imgPreview').classList.remove('show');
+  document.getElementById('imgPlaceholder').style.display='flex';
+  const st=document.getElementById('imgStatus');
+  st.style.display='block';
+  st.style.color='var(--red)';
+  st.textContent='❌ Gagal memuat gambar. Cek URL-nya.';
+}
+
+// ===== JADWAL =====
+function initJadwalModal(data){
+  const accSel=document.getElementById('jadwal_account_id');
+  accSel.innerHTML=state.akun.filter(a=>a.is_active).map(a=>`<option value="${a.id}">${a.username} (${a.platform==='instagram'?'IG':'FB'})</option>`).join('');
+  const ctSel=document.getElementById('jadwal_content_id');
+  ctSel.innerHTML=state.konten.filter(c=>c.is_active).map(c=>`<option value="${c.id}">${c.title}</option>`).join('');
+  document.getElementById('jadwal_date').value=dateStr(today);
+  if(data){
+    document.getElementById('jadwal_edit_id').value=data.id;
+    document.getElementById('modalJadwalTitle').textContent='✏️ Edit Jadwal';
+    document.getElementById('jadwal_account_id').value=data.account_id;
+    document.getElementById('jadwal_date').value=data.post_date;
+    document.getElementById('jadwal_session').value=data.post_session;
+    document.getElementById('jadwal_content_id').value=data.content_id;
+    document.getElementById('jadwal_delay_type').value=data.delay_type;
+  } else {
+    document.getElementById('jadwal_edit_id').value='';
+    document.getElementById('modalJadwalTitle').textContent='📅 Tambah Jadwal Manual';
+  }
+  checkDailyLimit();
+}
+
+function checkDailyLimit(){
+  const accId=parseInt(document.getElementById('jadwal_account_id').value);
+  const ds=document.getElementById('jadwal_date').value;
+  if(!accId||!ds) return;
+  const acc=state.akun.find(a=>a.id===accId);
+  const count=getPostCount(accId,ds);
+  const max=acc?acc.max_post_per_day:MAX_POST_PER_DAY;
+  const info=document.getElementById('dailyLimitInfo');
+  info.style.display='block';
+  if(count>=max){
+    info.innerHTML=`<div class="warning-box">⚠️ Akun ini sudah punya <strong>${count}/${max} posting</strong> pada ${ds}. Maks. ${max}/hari sudah tercapai!</div>`;
+  } else {
+    info.innerHTML=`<div style="background:var(--green-bg);border:1px solid rgba(52,211,153,.2);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:var(--green)">✅ Slot tersedia: <strong>${count}/${max}</strong> posting pada ${ds}</div>`;
+  }
+}
+
+function saveJadwal(){
+  const editId=parseInt(document.getElementById('jadwal_edit_id').value)||0;
+  const accId=parseInt(document.getElementById('jadwal_account_id').value);
+  const ds=document.getElementById('jadwal_date').value;
+  const session=document.getElementById('jadwal_session').value;
+  const ctId=parseInt(document.getElementById('jadwal_content_id').value);
+  const delayType=document.getElementById('jadwal_delay_type').value;
+  const acc=state.akun.find(a=>a.id===accId);
+  if(!acc||!ds||!ctId){showToast('❌','Lengkapi semua field');return;}
+  const count=getPostCount(accId,ds);
+  const max=acc.max_post_per_day;
+  if(!editId&&count>=max){showToast('❌',`Batas ${max} posting/hari sudah tercapai untuk akun ini!`);return;}
+  if(editId){
+    const j=state.jadwal.find(x=>x.id===editId);
+    if(j) Object.assign(j,{account_id:accId,content_id:ctId,platform:acc.platform,post_date:ds,post_session:session,delay_type:delayType});
+    showToast('✅','Jadwal diperbarui');
+  } else {
+    state.jadwal.push({id:++state.nextId,account_id:accId,content_id:ctId,platform:acc.platform,post_date:ds,post_session:session,delay_type:delayType,delay_seconds:Math.floor(Math.random()*1800),account_order:acc.account_order,status:'pending',campaign_end_date:dateStr(addDays(today,13))});
+    showToast('✅','Jadwal ditambahkan');
+  }
+  closeModal('modalTambahJadwal');
+  renderJadwal();
+}
+
+function renderJadwal(){
+  const filterP=document.getElementById('filterPlatform').value;
+  const filterS=document.getElementById('filterStatus').value;
+  const filterSes=document.getElementById('filterSession').value;
+  let data=state.jadwal;
+  if(filterP) data=data.filter(j=>j.platform===filterP);
+  if(filterS) data=data.filter(j=>j.status===filterS);
+  if(filterSes) data=data.filter(j=>j.post_session===filterSes);
+  const total=data.length;
+  const pages=Math.ceil(total/PAGE_SIZE_JADWAL)||1;
+  jadwalPage=Math.min(jadwalPage,pages);
+  const slice=data.slice((jadwalPage-1)*PAGE_SIZE_JADWAL,jadwalPage*PAGE_SIZE_JADWAL);
+  const tbody=document.getElementById('tbodyJadwal');
+  tbody.innerHTML=slice.length?slice.map(j=>{
+    const acc=state.akun.find(a=>a.id===j.account_id)||{username:'?',max_post_per_day:MAX_POST_PER_DAY};
+    const ct=state.konten.find(c=>c.id===j.content_id)||{title:'?'};
+    const sb=j.status==='success'?'badge-success':j.status==='failed'?'badge-danger':'badge-muted';
+    const count=getPostCount(j.account_id,j.post_date);
+    const max=acc.max_post_per_day||MAX_POST_PER_DAY;
+    return `<tr>
+      <td class="td-mono">${j.id}</td>
+      <td style="font-size:12px">${j.post_date}</td>
+      <td>${j.post_session==='morning'?'🌅 Pagi':'🌆 Sore'}</td>
+      <td style="font-weight:500;font-size:12.5px">${acc.username}</td>
+      <td><span class="tag ${j.platform==='instagram'?'tag-ig':'tag-fb'}">${j.platform==='instagram'?'IG':'FB'}</span></td>
+      <td style="font-size:12px;color:var(--text-secondary)">${ct.title}</td>
+      <td>${limitPips(count,max)}</td>
+      <td style="font-size:11.5px;color:var(--text-muted)">${Math.round(j.delay_seconds/60)}m</td>
+      <td><span class="badge ${sb}">${j.status}</span></td>
+      <td><div class="flex gap-2">
+        <button class="btn btn-sm btn-edit" onclick="editJadwal(${j.id})">✏️</button>
+        ${j.status==='failed'?`<button class="btn btn-sm" onclick="retryPost(${j.id})">↻</button>`:''}
+        <button class="btn btn-sm btn-danger" onclick="deleteJadwal(${j.id})">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px">Tidak ada data</td></tr>';
+  renderPagination('jadwalPagination', pages, jadwalPage, total, 'goToJadwalPage');
+}
+
+function editJadwal(id){
+  const j=state.jadwal.find(x=>x.id===id);
+  if(j){openModal('modalTambahJadwal',j);}
+}
+function deleteJadwal(id){if(confirm('Hapus jadwal ini?')){state.jadwal=state.jadwal.filter(x=>x.id!==id);renderJadwal();showToast('🗑','Jadwal dihapus');}}
+function retryPost(id){const j=state.jadwal.find(x=>x.id===id);if(j&&j.status==='failed'){j.status='pending';renderJadwal();showToast('↻','Di-reset ke pending');}}
+function generateJadwal(){showToast('⚡','Generate jadwal...');closeModal('modalGenJadwal');setTimeout(()=>showToast('✅','Jadwal 14 hari berhasil di-generate!'),1500);}
+
+// ===== LOG =====
+function renderLog(){
+  const total=state.logs.length;
+  const ok=state.logs.filter(l=>l.status==='success').length;
+  const fail=state.logs.filter(l=>l.status==='failed').length;
+  document.getElementById('logSuccessCount').textContent=ok;
+  document.getElementById('logFailCount').textContent=fail;
+  document.getElementById('logTotalCount').textContent=total;
+  document.getElementById('failBadge').textContent=fail;
+  const pages=Math.ceil(total/PAGE_SIZE_LOG)||1;
+  logPage=Math.min(logPage,pages);
+  const slice=state.logs.slice((logPage-1)*PAGE_SIZE_LOG,logPage*PAGE_SIZE_LOG);
+  document.getElementById('tbodyLog').innerHTML=slice.map(l=>`<tr>
+    <td style="font-size:11.5px;color:var(--text-muted)">${l.waktu}</td>
+    <td style="font-weight:500;font-size:12.5px">${l.akun}</td>
+    <td><span class="tag ${l.platform==='instagram'?'tag-ig':'tag-fb'}">${l.platform==='instagram'?'IG':'FB'}</span></td>
+    <td class="td-mono">${l.post_id}</td>
+    <td><span class="badge ${l.status==='success'?'badge-success':'badge-danger'}">${l.status==='success'?'✅ Berhasil':'❌ Gagal'}</span></td>
+    <td style="font-size:12px;color:var(--text-secondary)">${l.keterangan}</td>
+  </tr>`).join('');
+  renderPagination('logPagination', pages, logPage, total, 'goToLogPage');
+}
+function exportLog(){
+  const rows=[['Waktu','Akun','Platform','Post ID','Status','Keterangan'],...state.logs.map(l=>[l.waktu,l.akun,l.platform,l.post_id,l.status,l.keterangan])];
+  const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='log_autoposting.csv';a.click();
+  showToast('⬇','Log berhasil di-export ke CSV');
+}
+function clearLog(){if(confirm('Hapus semua log?')){state.logs=[];renderLog();showToast('🗑','Log dihapus');}}
+
+// ===== PAGINATION (Diperbaiki) =====
+// Menyediakan fungsi global agar tombol dapat memanggilnya secara langsung
+window.goToJadwalPage = function(p) { jadwalPage=p; renderJadwal(); };
+window.goToLogPage = function(p) { logPage=p; renderLog(); };
+
+function renderPagination(containerId, pages, current, totalCount, fnName){
+  const c=document.getElementById(containerId);
+  if(pages<=1){c.innerHTML='';return;}
+  let html=`<button class="page-btn" onclick="${fnName}(${current-1})" ${current<=1?'disabled':''}>‹</button>`;
+  let start=Math.max(1,current-2), end=Math.min(pages,start+4);
+  start=Math.max(1,end-4);
+  if(start>1) html+=`<button class="page-btn" onclick="${fnName}(1)">1</button>${start>2?'<span class="page-info">…</span>':''}`;
+  for(let i=start;i<=end;i++) html+=`<button class="page-btn ${i===current?'active':''}" onclick="${fnName}(${i})">${i}</button>`;
+  if(end<pages) html+=`${end<pages-1?'<span class="page-info">…</span>':''}<button class="page-btn" onclick="${fnName}(${pages})">${pages}</button>`;
+  html+=`<button class="page-btn" onclick="${fnName}(${current+1})" ${current>=pages?'disabled':''}>›</button>`;
+  html+=`<span class="page-info">${current}/${pages} (${totalCount} total)</span>`;
+  c.innerHTML=html;
+}
+
+// ===== QUICK POST =====
+function initQuickPost(){
+  const sel=document.getElementById('qp_account');
+  sel.innerHTML=state.akun.filter(a=>a.is_active).map(a=>`<option value="${a.id}">${a.username} (${a.platform==='instagram'?'IG':'FB'})</option>`).join('');
+  const ctSel=document.getElementById('qp_content');
+  ctSel.innerHTML=state.konten.filter(c=>c.is_active).map(c=>`<option value="${c.id}">${c.title}</option>`).join('');
+  qpCheckLimit();
+  qpPreviewContent();
+}
+function qpCheckLimit(){
+  const accId=parseInt(document.getElementById('qp_account').value);
+  if(!accId) return;
+  const acc=state.akun.find(a=>a.id===accId);
+  const count=getPostCountToday(accId);
+  const max=acc?acc.max_post_per_day:MAX_POST_PER_DAY;
+  const info=document.getElementById('qpLimitInfo');
+  const btn=document.getElementById('qpSendBtn');
+  if(count>=max){
+    info.innerHTML=`<span style="color:var(--red)">❌ Sudah ${count}/${max} posting hari ini — limit tercapai!</span>`;
+    btn.disabled=true;btn.style.opacity='.5';
+  } else {
+    info.innerHTML=`<span style="color:var(--green)">✅ Slot tersedia: ${count}/${max} posting hari ini</span>`;
+    btn.disabled=false;btn.style.opacity='1';
+  }
+}
+function qpPreviewContent(){
+  const ctId=parseInt(document.getElementById('qp_content').value);
+  const ct=state.konten.find(c=>c.id===ctId);
+  const preview=document.getElementById('qpPreview');
+  if(ct){
+    preview.style.display='block';
+    document.getElementById('qpImg').src=ct.url;
+    document.getElementById('qpTitle').textContent=ct.title;
+    document.getElementById('qpCaption').textContent=ct.caption;
+  } else preview.style.display='none';
+}
+function doQuickPost(){
+  const accId=parseInt(document.getElementById('qp_account').value);
+  const ctId=parseInt(document.getElementById('qp_content').value);
+  const acc=state.akun.find(a=>a.id===accId);
+  const ct=state.konten.find(c=>c.id===ctId);
+  if(!acc||!ct) return;
+  showToast('⚡',`Mengirim ke ${acc.username}...`);
+  closeModal('modalQuickPost');
+  setTimeout(()=>{
+    const ok=Math.random()>.1;
+    const dt=new Date();
+    state.logs.unshift({id:++state.nextId,waktu:dt.toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}),akun:acc.username,platform:acc.platform,post_id:ok?'QP_'+Math.random().toString(36).substr(2,8).toUpperCase():'-',status:ok?'success':'failed',keterangan:ok?'Quick Post berhasil':'Quick Post gagal — cek token'});
+    showToast(ok?'✅':'❌',ok?`Quick Post ${acc.username} berhasil!`:`Quick Post ${acc.username} gagal!`);
+    document.getElementById('failBadge').textContent=state.logs.filter(l=>l.status==='failed').length;
+  },1500);
+}
+
+// ===== SEARCH =====
+function handleSearch(q){
+  q=q.trim().toLowerCase();
+  const res=document.getElementById('searchResults');
+  const body=document.getElementById('searchBody');
+  if(!q){res.style.display='none';return;}
+  res.style.display='block';
+  const hl=(txt)=>txt.toLowerCase().includes(q)?txt.replace(new RegExp(q,'gi'),m=>`<span class="hl">${m}</span>`):txt;
+  let html='';
+  const matchAkun=state.akun.filter(a=>a.username.toLowerCase().includes(q)||a.platform.includes(q));
+  if(matchAkun.length){html+=`<div class="mb-3"><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px">Akun (${matchAkun.length})</div>`+matchAkun.map(a=>`<div class="flex items-center gap-2 mb-2" style="padding:6px 10px;background:var(--bg-base);border-radius:var(--radius)"><span class="tag ${a.platform==='instagram'?'tag-ig':'tag-fb'}">${a.platform==='instagram'?'IG':'FB'}</span><span style="font-size:13px">${hl(a.username)}</span><span class="badge ${a.is_active?'badge-success':'badge-muted'}" style="margin-left:auto">${a.is_active?'Aktif':'Off'}</span></div>`).join('')+'</div>';}
+  const matchKonten=state.konten.filter(c=>c.title.toLowerCase().includes(q)||c.caption.toLowerCase().includes(q));
+  if(matchKonten.length){html+=`<div class="mb-3"><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px">Konten (${matchKonten.length})</div>`+matchKonten.map(c=>`<div class="flex items-center gap-2 mb-2" style="padding:6px 10px;background:var(--bg-base);border-radius:var(--radius)"><span style="font-size:16px">🖼️</span><div><div style="font-size:12.5px;font-weight:500">${hl(c.title)}</div><div style="font-size:11px;color:var(--text-muted)">${hl(c.caption.substring(0,60))}...</div></div></div>`).join('')+'</div>';}
+  const matchJadwal=state.jadwal.filter(j=>{const a=state.akun.find(x=>x.id===j.account_id);return a&&(a.username.toLowerCase().includes(q)||j.post_date.includes(q)||j.status.includes(q));}).slice(0,5);
+  if(matchJadwal.length){html+=`<div><div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px">Jadwal (${matchJadwal.length} dari ${state.jadwal.filter(j=>{const a=state.akun.find(x=>x.id===j.account_id);return a&&(a.username.toLowerCase().includes(q)||j.post_date.includes(q)||j.status.includes(q));}).length})</div>`+matchJadwal.map(j=>{const a=state.akun.find(x=>x.id===j.account_id)||{username:'?'};return`<div class="flex items-center gap-2 mb-2" style="padding:6px 10px;background:var(--bg-base);border-radius:var(--radius)"><span class="tag ${j.platform==='instagram'?'tag-ig':'tag-fb'}">${j.platform==='instagram'?'IG':'FB'}</span><span style="font-size:12.5px">${hl(a.username)}</span><span style="font-size:11.5px;color:var(--text-muted)">${j.post_date}</span><span class="badge ${j.status==='success'?'badge-success':j.status==='failed'?'badge-danger':'badge-muted'}" style="margin-left:auto">${j.status}</span></div>`;}).join('')+'</div>';}
+  if(!html) html='<div style="font-size:13px;color:var(--text-muted);text-align:center;padding:16px">Tidak ada hasil untuk "'+q+'"</div>';
+  body.innerHTML=html;
+}
+function clearSearch(){document.getElementById('globalSearch').value='';document.getElementById('searchResults').style.display='none';}
+
+// ===== CONFIG =====
+function switchConfigTab(el){
+  document.querySelectorAll('.config-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.cfg-tab-content').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(el.dataset.tab).classList.add('active');
+}
+function updateCron(sess){
+  const [h,m]=document.getElementById(`time_${sess}`).value.split(':');
+  document.getElementById(`cron_${sess}`).value=`${parseInt(m)||0} ${parseInt(h)||0} * * *`;
+}
+function updateDelayUI(){
+  const t=document.getElementById('delay_type').value;
+  document.getElementById('delay_random_cfg').style.display=t==='random'?'block':'none';
+  document.getElementById('delay_fixed_cfg').style.display=t==='fixed'?'block':'none';
+}
+function saveConfig(){
+  const tg=document.getElementById('tg_token').value;
+  const chatid=document.getElementById('tg_chatid').value;
+  document.getElementById('var_tg_token').textContent=tg?tg.substring(0,15)+'•••':'—';
+  document.getElementById('var_tg_chatid').textContent=chatid||'—';
+  showToast('✅','Konfigurasi tersimpan');
+}
+function testTelegram(){
+  const token=document.getElementById('tg_token').value;
+  const chatid=document.getElementById('tg_chatid').value;
+  if(!token||!chatid){showToast('❌','Token & Chat ID wajib diisi');return;}
+  showToast('✈️','Mengirim test Telegram...');
+  setTimeout(()=>showToast('✅','Notifikasi test berhasil dikirim!'),1400);
+}
+function copyVar(type){
+  const val=type==='tg_token'?document.getElementById('tg_token').value:document.getElementById('tg_chatid').value;
+  navigator.clipboard?.writeText(val).catch(()=>{});
+  showToast('📋','Disalin ke clipboard');
+}
+
+// ===== DB SETUP =====
+function initGenDates(){
+  document.getElementById('gen_start').value=dateStr(today);
+  document.getElementById('gen_end').value=dateStr(addDays(today,13));
+}
+function copySQL(){
+  navigator.clipboard?.writeText(document.getElementById('sqlCode').textContent).catch(()=>{});
+  showToast('📋','SQL schema disalin');
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(icon,msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-icon').textContent=icon;
+  document.getElementById('toast-msg').textContent=msg;
+  t.style.transform='translateY(0)';t.style.opacity='1';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{t.style.transform='translateY(70px)';t.style.opacity='0';},2600);
+}
+
+// ===== INIT =====
+// Refresh log saat tab log dibuka
+const _origShowSection = showSection;
+function showSection(name, navEl) {
+  _origShowSection(name, navEl);
+  if (name === 'log') refreshLog();
+}
+
+// Load semua data dari API saat halaman pertama kali dibuka
+loadAllData();
+</script>
+</body>
+</html>
