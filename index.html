@@ -793,293 +793,53 @@ function expiryDate(daysFromNow){
   return dateStr(d);
 }
 
-// ===== API CONFIG =====
-const API_BASE = 'https://n8n-dzwm70fs4svr.jkt6.sumopod.my.id/webhook';
-
-async function apiFetch(path, options = {}) {
-  const res = await fetch(API_BASE + path, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
-  if (!res.ok) throw new Error(`API error ${res.status}: ${path}`);
-  return res.json();
-}
-
-// ===== STATE =====
 const state = {
-  akun: [],
-  konten: [],
-  jadwal: [],
-  logs: [],
-  nextId: 1,
-  _loaded: false,
+  akun:[
+    {id:1,platform:'instagram',username:'@medstore_jkt',ig_user_id:'17841400001',fb_page_id:'',token:'EAAxxxxIG1',token_expiry:expiryDate(55),max_post_per_day:3,account_order:1,is_active:true},
+    {id:2,platform:'instagram',username:'@medstore_bdg',ig_user_id:'17841400002',fb_page_id:'',token:'EAAxxxxIG2',token_expiry:expiryDate(5),max_post_per_day:3,account_order:2,is_active:true},
+    {id:3,platform:'instagram',username:'@medstore_sby',ig_user_id:'17841400003',fb_page_id:'',token:'EAAxxxxIG3',token_expiry:expiryDate(-3),max_post_per_day:2,account_order:3,is_active:false},
+    {id:4,platform:'facebook',username:'MedStore Jakarta',ig_user_id:'',fb_page_id:'10000001',token:'EAAxxxxFB1',token_expiry:expiryDate(60),max_post_per_day:3,account_order:1,is_active:true},
+    {id:5,platform:'facebook',username:'MedStore Bandung',ig_user_id:'',fb_page_id:'10000002',token:'EAAxxxxFB2',token_expiry:expiryDate(8),max_post_per_day:3,account_order:2,is_active:true},
+    {id:6,platform:'facebook',username:'MedStore Surabaya',ig_user_id:'',fb_page_id:'10000003',token:'EAAxxxxFB3',token_expiry:expiryDate(14),max_post_per_day:3,account_order:3,is_active:true},
+  ],
+  konten:[
+    {id:1,title:'Promo Vitamin C',url:'https://placehold.co/800x800/1C1F30/00D4AA?text=Vitamin+C',caption:'Jaga imunitas dengan Vitamin C berkualitas! 💊 Tersedia di toko kami.',hashtags:'#vitamin #kesehatan #imunitas #medstore',is_active:true},
+    {id:2,title:'Flash Sale Masker',url:'https://placehold.co/800x800/1C1F30/4A9EFF?text=Flash+Sale',caption:'Flash Sale Masker Premium! Diskon 50% hari ini saja. Jangan sampai kehabisan!',hashtags:'#masker #flashsale #promo #diskon50',is_active:true},
+    {id:3,title:'Tips Kesehatan',url:'https://placehold.co/800x800/1C1F30/A78BFA?text=Tips+Sehat',caption:'5 Tips Menjaga Kesehatan di Musim Hujan 🌧️ Simak selengkapnya!',hashtags:'#tipssehat #musimhujan #kesehatan',is_active:true},
+    {id:4,title:'New Product',url:'https://placehold.co/800x800/1C1F30/F59E0B?text=New+Product',caption:'Produk baru telah tiba! Segera cek toko kami.',hashtags:'#newproduct #launching #medstore',is_active:false},
+  ],
+  jadwal:[],
+  logs:[],
+  nextId:200,
 };
 
-// ===== LOADING OVERLAY =====
-function showLoading(msg='Memuat data...') {
-  let el = document.getElementById('apiLoadingOverlay');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'apiLoadingOverlay';
-    el.style.cssText = 'position:fixed;inset:0;background:rgba(9,9,11,.85);z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px)';
-    el.innerHTML = `
-      <div style="width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite"></div>
-      <div id="apiLoadingMsg" style="font-size:14px;color:var(--text-secondary)">${msg}</div>
-      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`;
-    document.body.appendChild(el);
+(function initData(){
+  const aktif = state.akun.filter(a=>a.is_active);
+  const kontenAktif = state.konten.filter(c=>c.is_active);
+  let sid=1;
+  for(let d=-2;d<14;d++){
+    const date=addDays(today,d);
+    const ds=dateStr(date);
+    ['morning','evening'].forEach(session=>{
+      const postsByAkun={};
+      aktif.forEach((acc,i)=>{
+        postsByAkun[acc.id]=(postsByAkun[acc.id]||0);
+        if(postsByAkun[acc.id]>=acc.max_post_per_day) return;
+        const ct=kontenAktif[Math.floor(Math.random()*kontenAktif.length)];
+        let status='pending';
+        if(d<0) status=Math.random()>.12?'success':'failed';
+        state.jadwal.push({id:sid++,account_id:acc.id,content_id:ct.id,platform:acc.platform,post_date:ds,post_session:session,delay_type:'random',delay_seconds:Math.floor(Math.random()*3600)+(i*30),account_order:acc.account_order,status,campaign_end_date:dateStr(addDays(today,13))});
+        postsByAkun[acc.id]++;
+      });
+    });
   }
-  document.getElementById('apiLoadingMsg').textContent = msg;
-  el.style.display = 'flex';
-}
-function hideLoading() {
-  const el = document.getElementById('apiLoadingOverlay');
-  if (el) el.style.display = 'none';
-}
-
-// ===== LOAD DATA FROM API =====
-async function loadAllData() {
-  showLoading('Menghubungkan ke database...');
-  try {
-    const [akun, konten, jadwal, logs] = await Promise.all([
-      apiFetch('/akun'),
-      apiFetch('/konten'),
-      apiFetch('/jadwal'),
-      apiFetch('/log'),
-    ]);
-    state.akun   = Array.isArray(akun)   ? akun   : [];
-    state.konten = Array.isArray(konten) ? konten : [];
-    state.jadwal = Array.isArray(jadwal) ? jadwal : [];
-    state.logs   = Array.isArray(logs)   ? logs   : [];
-    state._loaded = true;
-    hideLoading();
-    renderDashboard();
-    showToast('✅', `Data dimuat: ${state.akun.length} akun, ${state.konten.length} konten`);
-  } catch(e) {
-    hideLoading();
-    console.error('loadAllData error:', e);
-    showToast('❌', 'Gagal konek ke API. Cek n8n webhook aktif!');
-    // Tampilkan error banner
-    const banner = document.createElement('div');
-    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:var(--red-bg);border-bottom:1px solid var(--red);color:var(--red);font-size:13px;padding:10px 20px;z-index:9999998;display:flex;align-items:center;gap:12px';
-    banner.innerHTML = `<span>⚠️</span><span>Tidak dapat terhubung ke n8n API. Pastikan workflow <b>AutoPosting API Backend</b> aktif di n8n.</span><button onclick="loadAllData()" style="margin-left:auto;background:var(--red);color:#fff;border:none;border-radius:8px;padding:4px 12px;cursor:pointer;font-size:12px">↺ Coba Lagi</button>`;
-    document.body.appendChild(banner);
+  const names=['@medstore_jkt','@medstore_bdg','MedStore Jakarta','MedStore Bandung'];
+  for(let i=0;i<25;i++){
+    const dt=new Date(); dt.setMinutes(dt.getMinutes()-(i*45));
+    const st=Math.random()>.15?'success':'failed';
+    state.logs.push({id:i+1,waktu:dt.toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}),akun:names[i%4],platform:i%2===0?'instagram':'facebook',post_id:st==='success'?'POST_'+Math.random().toString(36).substr(2,8).toUpperCase():'-',status:st,keterangan:st==='success'?'Berhasil diposting':'Rate limit / Token expired'});
   }
-}
-
-// ===== OVERRIDE CRUD FUNCTIONS TO USE API =====
-
-// --- AKUN ---
-async function saveAkun(){
-  const editId=parseInt(document.getElementById('akun_edit_id').value)||0;
-  const platform=document.getElementById('akun_platform').value;
-  const username=document.getElementById('akun_username').value.trim();
-  const ig_user_id=document.getElementById('akun_ig_id').value.trim();
-  const fb_page_id=document.getElementById('akun_fb_id').value.trim();
-  const token=document.getElementById('akun_token').value.trim();
-  const token_expiry=document.getElementById('akun_expiry').value;
-  const max_post_per_day=Math.min(3,parseInt(document.getElementById('akun_max_post').value)||3);
-  const account_order=parseInt(document.getElementById('akun_order').value)||1;
-  const is_active=document.getElementById('akun_active').checked;
-  if(!username||!token){showToast('❌','Username dan Token wajib diisi');return;}
-  showLoading(editId ? 'Menyimpan perubahan akun...' : 'Menambahkan akun...');
-  try {
-    const body = {id:editId||undefined,platform,username,ig_user_id,fb_page_id,token,token_expiry,max_post_per_day,account_order,is_active};
-    await apiFetch('/akun', {method:'POST', body:JSON.stringify(body)});
-    await refreshAkun();
-    hideLoading();
-    showToast('✅', editId ? `Akun ${username} diperbarui` : `Akun ${username} ditambahkan`);
-  } catch(e) { hideLoading(); showToast('❌','Gagal menyimpan akun: '+e.message); }
-  document.getElementById('akun_edit_id').value='';
-  document.getElementById('modalAkunTitle').textContent='➕ Tambah Akun Sosmed';
-  closeModal('modalAkun');
-}
-
-async function toggleAkunStatus(id){
-  showLoading('Mengubah status akun...');
-  try {
-    await apiFetch('/toggle-akun', {method:'POST', body:JSON.stringify({id})});
-    await refreshAkun();
-    hideLoading();
-    const a=state.akun.find(x=>x.id===id);
-    if(a) showToast('✅',`${a.username} → ${a.is_active?'Aktif':'Non-aktif'}`);
-  } catch(e) { hideLoading(); showToast('❌','Gagal toggle akun: '+e.message); }
-}
-
-async function deleteAkun(id){
-  const a=state.akun.find(x=>x.id===id);
-  if(!a||!confirm(`Hapus akun ${a.username}?`)) return;
-  showLoading('Menghapus akun...');
-  try {
-    await apiFetch('/akun?id='+id, {method:'DELETE'});
-    await refreshAkun();
-    hideLoading();
-    showToast('🗑','Akun dihapus');
-  } catch(e) { hideLoading(); showToast('❌','Gagal hapus akun: '+e.message); }
-}
-
-async function refreshAkun(){
-  state.akun = await apiFetch('/akun');
-  renderAkun();
-  renderDashboard();
-}
-
-// --- KONTEN ---
-async function saveKonten(){
-  const editId=parseInt(document.getElementById('konten_edit_id').value)||0;
-  const title=document.getElementById('konten_title').value.trim();
-  const url=document.getElementById('konten_url').value.trim();
-  const caption=document.getElementById('konten_caption').value.trim();
-  const hashtags=document.getElementById('konten_hashtag').value.trim();
-  const is_active=document.getElementById('konten_active').checked;
-  if(!url){showToast('❌','URL Media wajib diisi');return;}
-  showLoading(editId ? 'Menyimpan konten...' : 'Menambahkan konten...');
-  try {
-    const body = {id:editId||undefined,title:title||'Konten Baru',url,caption,hashtags,is_active};
-    await apiFetch('/konten', {method:'POST', body:JSON.stringify(body)});
-    await refreshKonten();
-    hideLoading();
-    showToast('✅', editId ? 'Konten diperbarui' : 'Konten ditambahkan');
-  } catch(e) { hideLoading(); showToast('❌','Gagal simpan konten: '+e.message); }
-  document.getElementById('konten_edit_id').value='';
-  document.getElementById('modalKontenTitle').textContent='➕ Tambah Konten';
-  closeModal('modalKonten');
-  resetKontenModal();
-}
-
-async function toggleKonten(id){
-  const c=state.konten.find(x=>x.id===id);
-  if(!c) return;
-  showLoading('Mengubah status konten...');
-  try {
-    await apiFetch('/konten', {method:'POST', body:JSON.stringify({id,title:c.title,url:c.url,caption:c.caption,hashtags:c.hashtags,is_active:!c.is_active})});
-    await refreshKonten();
-    hideLoading();
-    const updated=state.konten.find(x=>x.id===id);
-    showToast('✅',`Konten ${updated?.is_active?'diaktifkan':'dinonaktifkan'}`);
-  } catch(e) { hideLoading(); showToast('❌','Gagal toggle konten: '+e.message); }
-}
-
-async function deleteKonten(id){
-  if(!confirm('Hapus konten ini?')) return;
-  showLoading('Menghapus konten...');
-  try {
-    await apiFetch('/konten?id='+id, {method:'DELETE'});
-    await refreshKonten();
-    hideLoading();
-    showToast('🗑','Konten dihapus');
-  } catch(e) { hideLoading(); showToast('❌','Gagal hapus konten: '+e.message); }
-}
-
-async function refreshKonten(){
-  state.konten = await apiFetch('/konten');
-  renderKonten();
-}
-
-// --- JADWAL ---
-async function saveJadwal(){
-  const editId=parseInt(document.getElementById('jadwal_edit_id').value)||0;
-  const accId=parseInt(document.getElementById('jadwal_account_id').value);
-  const ds=document.getElementById('jadwal_date').value;
-  const session=document.getElementById('jadwal_session').value;
-  const ctId=parseInt(document.getElementById('jadwal_content_id').value);
-  const delayType=document.getElementById('jadwal_delay_type').value;
-  const acc=state.akun.find(a=>a.id===accId);
-  if(!acc||!ds||!ctId){showToast('❌','Lengkapi semua field');return;}
-  const count=getPostCount(accId,ds);
-  const max=acc.max_post_per_day;
-  if(!editId&&count>=max){showToast('❌',`Batas ${max} posting/hari sudah tercapai untuk akun ini!`);return;}
-  showLoading(editId ? 'Menyimpan jadwal...' : 'Menambahkan jadwal...');
-  try {
-    const body = {
-      id:editId||undefined, account_id:accId, content_id:ctId,
-      platform:acc.platform, post_date:ds, post_session:session,
-      delay_type:delayType, delay_seconds:Math.floor(Math.random()*1800),
-      account_order:acc.account_order, campaign_end_date:dateStr(addDays(today,13))
-    };
-    await apiFetch('/jadwal', {method:'POST', body:JSON.stringify(body)});
-    await refreshJadwal();
-    hideLoading();
-    showToast('✅', editId ? 'Jadwal diperbarui' : 'Jadwal ditambahkan');
-  } catch(e) { hideLoading(); showToast('❌','Gagal simpan jadwal: '+e.message); }
-  closeModal('modalTambahJadwal');
-}
-
-async function deleteJadwal(id){
-  if(!confirm('Hapus jadwal ini?')) return;
-  showLoading('Menghapus jadwal...');
-  try {
-    await apiFetch('/jadwal?id='+id, {method:'DELETE'});
-    await refreshJadwal();
-    hideLoading();
-    showToast('🗑','Jadwal dihapus');
-  } catch(e) { hideLoading(); showToast('❌','Gagal hapus jadwal: '+e.message); }
-}
-
-async function retryPost(id){
-  const j=state.jadwal.find(x=>x.id===id);
-  if(!j||j.status!=='failed') return;
-  showLoading('Me-reset jadwal ke pending...');
-  try {
-    const acc=state.akun.find(a=>a.id===j.account_id);
-    await apiFetch('/jadwal', {method:'POST', body:JSON.stringify({...j, id:j.id, status:'pending', platform:acc?.platform||j.platform})});
-    await refreshJadwal();
-    hideLoading();
-    showToast('↻','Di-reset ke pending');
-  } catch(e) { hideLoading(); showToast('❌','Gagal retry: '+e.message); }
-}
-
-async function generateJadwal(){
-  const startDate = document.getElementById('gen_start')?.value || dateStr(today);
-  const endDate   = document.getElementById('gen_end')?.value   || dateStr(addDays(today,13));
-  showLoading('Generate jadwal ke database...');
-  closeModal('modalGenJadwal');
-  try {
-    await apiFetch('/gen-jadwal', {method:'POST', body:JSON.stringify({start_date:startDate, end_date:endDate})});
-    await refreshJadwal();
-    hideLoading();
-    showToast('✅','Jadwal berhasil di-generate!');
-  } catch(e) { hideLoading(); showToast('❌','Gagal generate jadwal: '+e.message); }
-}
-
-async function refreshJadwal(){
-  state.jadwal = await apiFetch('/jadwal');
-  renderJadwal();
-  renderDashboard();
-}
-
-// --- LOG ---
-async function refreshLog(){
-  state.logs = await apiFetch('/log');
-  renderLog();
-}
-
-async function clearLog(){
-  showToast('ℹ️','Hapus log dilakukan langsung di database melalui n8n/SQL.');
-}
-
-// --- QUICK POST (tetap simulasi, trigger n8n schedule manual) ---
-async function doQuickPost(){
-  const accId=parseInt(document.getElementById('qp_account').value);
-  const ctId=parseInt(document.getElementById('qp_content').value);
-  const acc=state.akun.find(a=>a.id===accId);
-  const ct=state.konten.find(c=>c.id===ctId);
-  if(!acc||!ct) return;
-  showToast('⚡',`Menambahkan jadwal posting sekarang untuk ${acc.username}...`);
-  closeModal('modalQuickPost');
-  showLoading('Membuat jadwal posting...');
-  try {
-    const body = {
-      account_id:accId, content_id:ctId, platform:acc.platform,
-      post_date:dateStr(today), post_session:'morning',
-      delay_type:'fixed', delay_seconds:30,
-      account_order:acc.account_order, campaign_end_date:dateStr(today)
-    };
-    await apiFetch('/jadwal', {method:'POST', body:JSON.stringify(body)});
-    await refreshJadwal();
-    hideLoading();
-    showToast('✅',`Jadwal quick post ${acc.username} ditambahkan!`);
-  } catch(e) { hideLoading(); showToast('❌','Gagal quick post: '+e.message); }
-}
+})();
 
 // ===== NAVIGATION =====
 function showSection(name,navEl){
@@ -1660,15 +1420,7 @@ function showToast(icon,msg){
 }
 
 // ===== INIT =====
-// Refresh log saat tab log dibuka
-const _origShowSection = showSection;
-function showSection(name, navEl) {
-  _origShowSection(name, navEl);
-  if (name === 'log') refreshLog();
-}
-
-// Load semua data dari API saat halaman pertama kali dibuka
-loadAllData();
+renderDashboard();
 </script>
 </body>
 </html>
